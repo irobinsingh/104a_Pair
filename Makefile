@@ -19,4 +19,4 @@ ${EXECBIN} : ${OBJECTS}
 	${GCC} -c $<
 
 clean :
-	- rm ${OBJECTS}
+	- rm ${OBJECTS} *.str

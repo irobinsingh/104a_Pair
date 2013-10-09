@@ -31,6 +31,8 @@ void chomp (char *string, char delim) {
 
 // Run cpp against the lines of the file.
 void cpplines (FILE *pipe, char *filename) {
+
+	// printf("in cpplines\n");
    int linenr = 1;
    char inputname[LINESIZE];
    strcpy (inputname, filename);
@@ -39,6 +41,8 @@ void cpplines (FILE *pipe, char *filename) {
       char *fgets_rc = fgets (buffer, LINESIZE, pipe);
       if (fgets_rc == NULL) break;
       chomp (buffer, '\n');
+
+    //  printf("chomped\n");
      /* 			  printf ("%s:line %d: [%s]\n", filename, linenr, buffer);
 					  // http://gcc.gnu.org/onlinedocs/cpp/Preprocessor-Output.html
 					  int sscanf_rc = sscanf (buffer, "# %d \"%[^\"]\"",
@@ -56,6 +60,7 @@ void cpplines (FILE *pipe, char *filename) {
 						 printf ("token %d.%d: [%s]\n",
 								 linenr, tokenct, token);
 					  }*/
+	// printf("intern_stringset\n");
       intern_stringset (fgets_rc);
       ++linenr;
    }
@@ -69,7 +74,8 @@ int main (int argc, char **argv) {
 	string input_file = "";
 	string debugFlag = "";
 	string baseName = "";
-	char *filename;
+	string programName = "";
+	char * fileName;
 	while((arg =  getopt(argc, argv, "ly@:D:")) != -1){
 		switch (arg){
 		case 'l':
@@ -107,24 +113,26 @@ int main (int argc, char **argv) {
 			printf ("unknonw file extention\n");
 			oc_error = 1;
 		}else{
-			filename = argv[optind];
-			baseName = basename(filename);
-			printf("\"filename\" %s\n", baseName.c_str());
+			fileName = argv[optind];
+			baseName = basename(fileName);
+			programName = baseName.substr(0, baseName.length()-3);
+			printf("\"baseName\" %s\n\"programName\" %s\n", baseName.c_str(), programName.c_str());
 		}
 	}
 
 	if(oc_error == 0){
-		string command = CPP + " " + filename;
+		printf("strcpy: %s\n", fileName);
+		string command = CPP + " " + fileName;
 		printf ("command=\"%s\"\n", command.c_str());
 		FILE *pipe = popen (command.c_str(), "r");
 		if (pipe == NULL) {
 			syserrprintf (command.c_str());
 		}else {
-			cpplines (pipe, filename);
+			cpplines (pipe, fileName);
 			int pclose_rc = pclose (pipe);
 			eprint_status (command.c_str(), pclose_rc);
 
-			string outputFileName = baseName + ".str";
+			string outputFileName = programName + ".str";
 			FILE *outputFile = fopen (outputFileName.c_str(),"w");
 
 			dump_stringset (outputFile);
