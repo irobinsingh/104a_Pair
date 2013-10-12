@@ -33,36 +33,22 @@ void chomp (char *string, char delim) {
 void cpplines (FILE *pipe, char *filename) {
 
 	// printf("in cpplines\n");
-   int linenr = 1;
    char inputname[LINESIZE];
    strcpy (inputname, filename);
-   for (;;) {
-      char buffer[LINESIZE];
-      char *fgets_rc = fgets (buffer, LINESIZE, pipe);
-      if (fgets_rc == NULL) break;
-      chomp (buffer, '\n');
+	for (;;) {
+		char buffer[LINESIZE];
+		char *fgets_rc = fgets (buffer, LINESIZE, pipe);
+		if (fgets_rc == NULL) break;
+		chomp (buffer, '\n');
+	char *savepos = NULL;
+	char *bufptr = buffer;
 
-    //  printf("chomped\n");
-     /* 			  printf ("%s:line %d: [%s]\n", filename, linenr, buffer);
-					  // http://gcc.gnu.org/onlinedocs/cpp/Preprocessor-Output.html
-					  int sscanf_rc = sscanf (buffer, "# %d \"%[^\"]\"",
-											  &linenr, filename);
-					  if (sscanf_rc == 2) {
-						 printf ("DIRECTIVE: line %d file \"%s\"\n", linenr, filename);
-						 continue;
-					  }
-					  char *savepos = NULL;
-					  char *bufptr = buffer;
-					  for (int tokenct = 1;; ++tokenct) {
-						 char *token = strtok_r (bufptr, " \t\n", &savepos);
-						 bufptr = NULL;
-						 if (token == NULL) break;
-						 printf ("token %d.%d: [%s]\n",
-								 linenr, tokenct, token);
-					  }*/
-	// printf("intern_stringset\n");
-      intern_stringset (fgets_rc);
-      ++linenr;
+	for (int tokenct = 1;; ++tokenct) {
+		char *token = strtok_r (bufptr, " \t\n", &savepos);
+		bufptr = NULL;
+		if (token == NULL) break;
+		intern_stringset (token);
+	}
    }
 }
 
