@@ -1,3 +1,7 @@
+# Assignment 1 CS 104a 
+# Authors: Konstantin Litovskiy and Gahl Levy
+# Users Names: klitovsk and grlevy
+
 GCC        = g++ -g -O0 -Wall -Wextra -std=gnu++0x
 MKDEPS     = g++ -MM -std=gnu++0x
 VALGRIND   = valgrind --leak-check=full --show-reachable=yes

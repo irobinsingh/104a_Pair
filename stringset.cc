@@ -1,4 +1,8 @@
 
+// Assignment 1 CS 104a
+// Authors: Konstantin Litovskiy and Gahl Levy
+// Users Names: klitovsk and grlevy
+
 #include <string>
 #include <unordered_set>
 using namespace std;
