@@ -55,8 +55,6 @@ void cpplines (FILE *pipe, char *filename) {
 int main (int argc, char **argv) {
 
 	int arg;
-	int arg_error = 0;
-	int oc_error = 0;
 	string input_file = "";
 	string debugFlag = "";
 	string baseName = "";
@@ -65,51 +63,47 @@ int main (int argc, char **argv) {
 	while((arg =  getopt(argc, argv, "ly@:D:")) != -1){
 		switch (arg){
 		case 'l':
-		   printf("%s\n", "-l");
 		   break;
 		 case 'y':
-			 printf("%s\n", "-y");
 			break;
 		 case '@':
 			 debugFlag = optarg;
-			 printf("flag: %s\n",debugFlag.c_str());
 			 set_debugflags(debugFlag.c_str());
 			break;
 		 case 'D':
-			 printf("file: %s\n",optarg);
 			break;
 		case ':':
 			syserrprintf ("Requires Input");
-			arg_error = 1;
+			set_exitstatus (1);
 			break;
 		case '?':
 			syserrprintf (" is not a valid argument");
-			arg_error = 1;
+			set_exitstatus (1);
 			break;
 		}
 	}
-	if(arg_error != 0){
-		printf ("error\n");
+	if(get_exitstatus() != 0){
+		syserrprintf ("Invalid argument");
 
 	}else{
-		printf ("input file: %s\n", argv[optind]);
+		//printf ("input file: %s\n", argv[optind]);
 		input_file = argv[optind];
 
 		if(input_file.compare(input_file.length()-2, input_file.length(), "oc") != 0 ){
-			printf ("unknonw file extention\n");
-			oc_error = 1;
+			syserrprintf ("Unknown file extension");
+			set_exitstatus (1);
 		}else{
 			fileName = argv[optind];
 			baseName = basename(fileName);
 			programName = baseName.substr(0, baseName.length()-3);
-			printf("\"baseName\" %s\n\"programName\" %s\n", baseName.c_str(), programName.c_str());
+			//printf("\"baseName\" %s\n\"programName\" %s\n", baseName.c_str(), programName.c_str());
 		}
 	}
 
-	if(oc_error == 0){
-		printf("strcpy: %s\n", fileName);
+	if(get_exitstatus() == 0){
+		//printf("strcpy: %s\n", fileName);
 		string command = CPP + " " + fileName;
-		printf ("command=\"%s\"\n", command.c_str());
+		//printf ("command=\"%s\"\n", command.c_str());
 		FILE *pipe = popen (command.c_str(), "r");
 		if (pipe == NULL) {
 			syserrprintf (command.c_str());
@@ -117,14 +111,25 @@ int main (int argc, char **argv) {
 			cpplines (pipe, fileName);
 			int pclose_rc = pclose (pipe);
 			eprint_status (command.c_str(), pclose_rc);
+            
+            try {
+                string outputFileName = programName + ".str";
+                
+                FILE *outputFile = fopen (outputFileName.c_str(),"w");
+                
+                dump_stringset (outputFile);
+                fclose (outputFile);
+                
+            } catch (...) {
+                syserrprintf ("File Error");
+            }
 
-			string outputFileName = programName + ".str";
-			FILE *outputFile = fopen (outputFileName.c_str(),"w");
-
-			dump_stringset (outputFile);
-			fclose (outputFile);
+			
 		}
 	}
+    else{
+        syserrprintf ("Invalid Arguments");
+    }
 	return get_exitstatus();
 }
 
