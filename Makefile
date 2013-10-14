@@ -23,4 +23,4 @@ ${EXECBIN} : ${OBJECTS}
 	${GCC} -c $<
 
 clean :
-	- rm -f ${OBJECTS} *.str
+	- rm -f ${OBJECTS} *.str ${EXECBIN}
