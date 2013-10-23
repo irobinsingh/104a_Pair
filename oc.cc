@@ -48,7 +48,6 @@ void cpplines (FILE *pipe, char *filename) {
         // this section tokenizes the string
         for (int tokenct = 1;; ++tokenct) { 
             // tells the tokenizer what to look for
-            bufptr = NULL;
             char *token = strtok_r (bufptr, " \t\n", &savepos);
             bufptr = NULL;
             if (token == NULL) break;
@@ -64,6 +63,7 @@ int main (int argc, char **argv) {
     string debugFlag = "";
     string baseName = "";
     string programName = "";
+    string cppInput = "";
     char * fileName;
     
     //uses getopt to parse the command line arguments
@@ -78,6 +78,7 @@ int main (int argc, char **argv) {
                 set_debugflags(debugFlag.c_str());
                 break;
             case 'D':
+                cppInput = optarg;
                 break;
             case ':':
                 // outputs error message to standard error
@@ -110,7 +111,14 @@ int main (int argc, char **argv) {
         }
 
         if(get_exitstatus() == 0){
-            string command = CPP + " " + fileName;
+            
+            string command = CPP + " ";
+            
+            if (cppInput.compare("") != 0){
+               command += "-D " + cppInput + " ";
+            }
+            
+            command += fileName;
             FILE *pipe = popen (command.c_str(), "r"); // opens the pipe
             if (pipe == NULL) {
             syserrprintf (command.c_str());
