@@ -37,16 +37,32 @@ static void* yycalloc (size_t size);
 
 %%
 
-program:    structdef*                                           { $$ = $1; }
-          | function*                                            { $$ = $1; }
-          | statement*                                           { $$ = $1; }
+program:    strctdf_list                                         { $$ = $1; }
+          | function_list                                        { $$ = $1; }
+          | stmnt_list                                           { $$ = $1; }
+		  |                                                      { $$ = 0; }
           ;       
 
-structdef:  TOK_STRUCT IDENT '{' (decl ';')* '}'                 {          }
+structdef:  TOK_STRUCT TOK_IDENT '{' decl_list2 '}'              { $$ = adopt2 ($1, $2, $4); free_ast2($3, $5) }
           ;
+		
+strctdf_list: structdef											 { $$ = $1; }
+		  | strctdf_list structdef                               { $$ = adopt1 ($1, $3); free_ast ($2); }
+		  |                                                      { $$ = 0; }
+		  ;
 
-decl:       type IDENT                                           { $$ = adopt1($1, $2); }
+decl:       type TOK_IDENT                                       { $$ = adopt1($1, $2); }
           ;
+		   
+decl_list1:  decl                                                { $$ = $1; }
+		  | decl_list ',' decl                                   { $$ = adopt1 ($1, $3); free_ast ($2); }
+		  |                                                      { $$ = 0; }
+		  ;
+		  
+decl_list2:  decl                                                { $$ = $1; }
+		  | decl_list ';' decl                                   { $$ = adopt1 ($1, $3); free_ast ($2); }
+		  |                                                      { $$ = 0; }
+		  ;
        
 type:       basetype TOK_ARRAY                                   { $$ = adopt1($1, $2); }
           ;
@@ -56,14 +72,19 @@ basetype:   TOK_VOID                                             { $$ = $1; }
           | TOK_CHAR                                             { $$ = $1; }
           | TOK_INT                                              { $$ = $1; }
           | TOK_STRING                                           { $$ = $1; }
-          | IDENT                                                {          }
+          | TOK_IDENT                                            { $$ = $1; }
           ;
 
-function:   type IDENT '(' (decl( ',' decl)*) ')' block          {          }
+function:   type TOK_IDENT '(' decl_list1 ')' block              { $$ = adopt2 (adopt1($1, $2), $4, $6); free_ast2($3, $5); }
           ;
+		
+function_list: function											 { $$ = $1; }
+		  | function_list function                               { $$ = adopt1 ($1, $3); free_ast ($2); }
+		  |                                                      { $$ = 0; }
+		  ;
           
-block:      '{' statement* '}'                                   {          }
-          | ';'                                                  {          }
+block:      '{' stmnt_list '}'                                   { $$ = $2; free_ast2 ($1, $3); }
+          | ';'                                                  { $$ = 0; free_ast ($1);}
           ;
           
 statement:  block                                                { $$ = $1; }
@@ -73,15 +94,20 @@ statement:  block                                                { $$ = $1; }
           | return                                               { $$ = $1; }
           | expr ':'                                             { $$ = $1; free_ast($2); }
           ;
-          
-vardecl:    type IDENT '=' expr ';'                             { $$ =            }
+		  
+stmnt_list: statement                                            { $$ = $1; } 
+          | stmnt_list statement                                 { $$ = adopt1 ($1, $2); }
+		  |                                                      { $$ = 0; }
+		  ;
+		 
+vardecl:    type IDENT '=' expr ';'                              { $$ = adopt2 ($3, adopt1($1, $2), $4); free_ast($5); }
           ;
           
 while:      TOK_WHILE '(' expr ')' statement                     { $$ = adopt2 ($1, $3, $5); free_ast2 ($2, $4);}
           ;
          
 ifelse:     TOK_IF '(' expr ')' statement                        { $$ = adopt2 ($1, $3, $5); free_ast2 ($2, $4); }
-          | TOK_IF '(' expr ')' statement (TOK_ELSE statement)   { $$ = adopt2 (adopt1sym ($1, $3, TOK_IFELSE), $5, $7);freeast3 ($2, $4, $6); }
+          | TOK_IF '(' expr ')' statement TOK_ELSE statement     { $$ = adopt2 ($1, $3, adopt2 ($6, $5, $7)); free_ast2 ($2, $4);}
           ; 
 
 return:     TOK_RETURN ';'                                       { $$ = adopt1 ($1, NULL); free_ast ($2) }
@@ -93,10 +119,15 @@ expr:       binop                                                { $$ = $1; }
           | allocator                                            { $$ = $1; }
           | call                                                 { $$ = $1; }
           | unop                                                 { $$ = $1; }
-          | '(' expr ')'                                         { free_ast2 ($1, $3); $$ = $2; }
+          | '(' expr ')'                                         { $$ = $2; free_ast2 ($1, $3); }
           | variable                                             { $$ = $1; }
           | constant                                             { $$ = $1; }
           ;
+		  
+expr_list:  expr                                                 { $$ = $1; }
+		  | expr_lsit ',' expr                                   { $$ = adopt1 ($1, $3); free_ast ($2); }
+		  |                                                      { $$ = 0; }
+		  ;
 
 binop:      expr '=' expr                                        { $$ = adopt2 ($2, $1, $3); }
 		  | expr TOK_EQ expr	                                 { $$ = adopt2 ($2, $1, $3); }
@@ -119,58 +150,26 @@ unop:       '+' expr %prec POS                                   { $$ = adopt1sy
           | TOK_CHR expr                                         { $$ = adopt1sym ($1, $2, TOK_CHR); }
           ;
             
-allocator:  TOK_NEW basetype '(' expr ')'
-          | TOK_NEW basetype '(' ')'
-          | TOK_NEW basetype '[' expr ']'
+allocator:  TOK_NEW basetype '(' expr ')'	                     { $$ = adopt2 ($1, $2, $3); free_ast2 ($3, $5); }
+          | TOK_NEW basetype '(' ')'	                         { $$ = adopt2 ($1, $2, NULL); free_ast2 ($3, $4); }
+          | TOK_NEW basetype '[' expr ']'	                     { $$ = adopt2 ($1, $2, $3); free_ast2 ($3, $5); }
           ;
 
-call:       IDENT '(' expr( ',' expr)*) ')'	                    {                           }
-          | IDENT '(' ')'	                                    {                           }
+call:       TOK_IDENT '(' expr_list ')'	                         { $$ = adopt1 ($1, $3); free_ast2 ($2, $4);}
           ;
           
-variable:   IDENT	                                            {                           }
-          | expr '[' expr ']' 	                                {                           }
-          | expr '.' IDENT	                                    {                           }
+variable:   TOK_IDENT	                                         { $$ = $1 }
+          | expr '[' expr ']' 	                                 { $$ = adopt1 ($1, $3); free_ast2 ($2, $4); }
+          | expr '.' TOK_IDENT	                                 { $$ = adopt1 ($1, $3); free_ast ($2); }
           ;
           
-constant:   TOK_INTCON
-          | TOK_CHARCON
-          | TOK_STRINGCON
-          | TOK_FALSE
-          | TOK_TRUE
-          | TOK_NULL
+constant:   TOK_INTCON                                           { $$ = $1; }
+          | TOK_CHARCON                                          { $$ = $1; }
+          | TOK_STRINGCON                                        { $$ = $1; }
+          | TOK_FALSE                                            { $$ = $1; }
+          | TOK_TRUE                                             { $$ = $1; }
+          | TOK_NULL                                             { $$ = $1; }
           ;
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-        
-		| '[' expr ']'          { free_ast2 ($1, $3); $$ = $2; }
-        | IDENT                 { $$ = $1; }
-        | NUMBER                { $$ = $1; }
-        ;
-
 %%
 
 const char* get_yytname (int symbol) {
