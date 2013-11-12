@@ -24,6 +24,7 @@ const string CPP = "/usr/bin/cpp";
 const size_t LINESIZE = 1024;
 FILE* tok_file_out = NULL;
 extern int yy_flex_debug;
+extern int YYDEBUG;
 
 int main (int argc, char **argv) {
 
@@ -43,7 +44,8 @@ int main (int argc, char **argv) {
                 yy_flex_debug = 1;
                 break;
             case 'y':
-                break; // these flags will be used in future assignments
+				YYDEBUG = 1;
+                break; 
             case '@':
                 debugFlag = optarg;
                 set_debugflags(debugFlag.c_str());
@@ -100,8 +102,9 @@ int main (int argc, char **argv) {
             try {
                 string outputFileName = programName + ".tok";
                 tok_file_out = fopen (outputFileName.c_str(),"w");
-                while (yylex() != YYEOF) {}
-
+                
+				yyparse();
+				
                 fclose (tok_file_out); // close the str file
 
             } catch (...) { // if there is an error with the file
@@ -110,17 +113,30 @@ int main (int argc, char **argv) {
 
 
 
+            string outputFileNameSTR = programName + ".str";
+			string outputFileNameAST = programName + ".ast";
+			
             try {
-                string outputFileName = programName + ".str";
-
-                FILE *outputFile = fopen (outputFileName.c_str(),"w");
+				
+                FILE *outputFileSTR = fopen (outputFileNameSTR.c_str(),"w");
 
                 // writes the strings to the file
-                dump_stringset (outputFile); 
-                fclose (outputFile); // close the str file
+                dump_stringset (outputFileSTR); 
+                fclose (outputFileSTR); // close the str file
+            } catch (...) { // if there is an error with the file
+                syserrprintf ("File Error: Failed to write to %s.", outputFileNameSTR);
+            }
+			
+			try {
+				
+                FILE *outputFileAST = fopen (outputFileNameAST.c_str(),"w");
+
+                // writes the strings to the file
+                dump_astree (outputFileAST, TOK_ROOT); 
+                fclose (outputFileAST); // close the str file
 
             } catch (...) { // if there is an error with the file
-                syserrprintf ("File Error");
+                syserrprintf ("File Error: Failed to write to %s.", outputFileNameAST);
             }
 
         }
