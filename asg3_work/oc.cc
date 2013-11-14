@@ -134,7 +134,7 @@ int main (int argc, char **argv) {
                 FILE *outputFileAST = fopen (outputFileNameAST.c_str(),"w");
 
                 // writes the strings to the file
-                //dump_astree (outputFileAST, TOK_ROOT);
+                dump_astree (outputFileAST, yyparse_astree);
                 fclose (outputFileAST); // close the str file
 
             } catch (...) { // if there is an error with the file

@@ -46,7 +46,7 @@ astree* adopt1sym (astree* root, astree* child, int symbol) {
    root->symbol = symbol;
    return root;
 }
-
+/*
 static void dump_node (FILE* outfile, astree* node) {
    fprintf (outfile, "%p->{%s(%d) %ld:%ld.%03ld \"%s\" [",
             node, get_yytname (node->symbol), node->symbol,
@@ -60,10 +60,28 @@ static void dump_node (FILE* outfile, astree* node) {
    }
    fprintf (outfile, "]}");
 }
+*/
 
+static void dump_node (FILE* outfile, astree* node) {
+   fprintf (outfile, "%s (%s)", get_yytname (node->symbol), node->lexinfo->c_str());
+   bool need_space = false;
+}
+
+/*
 static void dump_astree_rec (FILE* outfile, astree* root, int depth) {
    if (root == NULL) return;
    fprintf (outfile, "%*s%s ", depth * 3, "", root->lexinfo->c_str());
+   dump_node (outfile, root);
+   fprintf (outfile, "\n");
+   for (size_t child = 0; child < root->children.size(); ++child) {
+      dump_astree_rec (outfile, root->children[child], depth + 1);
+   }
+}
+*/
+
+static void dump_astree_rec (FILE* outfile, astree* root, int depth) {
+   if (root == NULL) return;
+   fprintf (outfile, "%*s", depth * 4, "");
    dump_node (outfile, root);
    fprintf (outfile, "\n");
    for (size_t child = 0; child < root->children.size(); ++child) {
@@ -86,7 +104,6 @@ void yyprint (FILE* outfile, unsigned short toknum, astree* yyvaluep) {
    fflush (NULL);
 }
 
-
 void free_ast (astree* root) {
    while (not root->children.empty()) {
       astree* child = root->children.back();
