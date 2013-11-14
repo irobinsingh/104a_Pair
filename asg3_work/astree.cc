@@ -1,4 +1,4 @@
-// Assignment 2 CS 104a 
+// Assignment 3 CS 104a 
 // Modified By: Konstantin Litovskiy and Gahl Levy
 // Users Names: klitovsk and grlevy
 
@@ -110,6 +110,7 @@ void free_ast (astree* root) {
       root->children.pop_back();
       free_ast (child);
    }
+    // prints debug info
    DEBUGF ('f', "free [%X]-> %d:%d.%d: %s: \"%s\")\n",
            (uintptr_t) root, root->filenr, root->linenr, root->offset,
            get_yytname (root->symbol), root->lexinfo->c_str());
