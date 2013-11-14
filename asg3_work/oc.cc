@@ -24,7 +24,7 @@ const string CPP = "/usr/bin/cpp";
 const size_t LINESIZE = 1024;
 FILE* tok_file_out = NULL;
 extern int yy_flex_debug;
-extern int YYDEBUG;
+extern int yydebug;
 
 int main (int argc, char **argv) {
 
@@ -36,6 +36,7 @@ int main (int argc, char **argv) {
     string cppInput = "";
     char * fileName;
     yy_flex_debug = 0;
+    yydebug = 0;
     
     //uses getopt to parse the command line arguments
     while((arg =  getopt(argc, argv, "ly@:D:")) != -1){ 
@@ -44,7 +45,7 @@ int main (int argc, char **argv) {
                 yy_flex_debug = 1;
                 break;
             case 'y':
-				YYDEBUG = 1;
+				yydebug = 1;
                 break; 
             case '@':
                 debugFlag = optarg;
@@ -124,7 +125,8 @@ int main (int argc, char **argv) {
                 dump_stringset (outputFileSTR); 
                 fclose (outputFileSTR); // close the str file
             } catch (...) { // if there is an error with the file
-                syserrprintf ("File Error: Failed to write to %s.", outputFileNameSTR);
+               string errout = "File Error: Failed to write to " + outputFileNameSTR + ".";
+               syserrprintf (errout.c_str());
             }
 			
 			try {
@@ -132,11 +134,12 @@ int main (int argc, char **argv) {
                 FILE *outputFileAST = fopen (outputFileNameAST.c_str(),"w");
 
                 // writes the strings to the file
-                dump_astree (outputFileAST, TOK_ROOT); 
+                //dump_astree (outputFileAST, TOK_ROOT);
                 fclose (outputFileAST); // close the str file
 
             } catch (...) { // if there is an error with the file
-                syserrprintf ("File Error: Failed to write to %s.", outputFileNameAST);
+                string errout2 = "File Error: Failed to write to " + outputFileNameAST + ".";
+                syserrprintf (errout2.c_str());
             }
 
         }

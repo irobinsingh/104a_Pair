@@ -24,6 +24,16 @@ static void* yycalloc (size_t size);
 
 %destructor { error_destructor ($$); } <>
 
+%token TOK_VOID TOK_BOOL TOK_CHAR TOK_INT TOK_STRING
+%token TOK_IF TOK_ELSE TOK_WHILE TOK_RETURN TOK_STRUCT
+%token TOK_FALSE TOK_TRUE TOK_NULL TOK_NEW TOK_ARRAY vardcl
+%token TOK_EQ TOK_NE TOK_LT TOK_LE TOK_GT TOK_GE decl_list
+%token TOK_IDENT TOK_INTCON TOK_CHARCON TOK_STRINGCON expr_lsit
+
+%token TOK_BLOCK TOK_CALL TOK_IFELSE TOK_INITDECL
+%token TOK_POS TOK_NEG TOK_NEWARRAY TOK_TYPEID TOK_FIELD
+%token TOK_ORD TOK_CHR TOK_ROOT
+
 %token  ROOT IDENT NUMBER
 
 %right  TOK_IF TOK_ELSE
@@ -47,7 +57,7 @@ structdef:  TOK_STRUCT TOK_IDENT '{' decl_list2 '}'              { $$ = adopt2 (
           ;
 		
 strctdf_list: structdef											 { $$ = $1; }
-		  | strctdf_list structdef                               { $$ = adopt1 ($1, $3); free_ast ($2); }
+		  | strctdf_list structdef                               { $$ = adopt1 ($1, $2);}
 		  |                                                      { $$ = 0; }
 		  ;
 
@@ -65,6 +75,7 @@ decl_list2:  decl                                                { $$ = $1; }
 		  ;
        
 type:       basetype TOK_ARRAY                                   { $$ = adopt1($1, $2); }
+          | basetype                                             { $$ = adopt1($1, 0);  }
           ;
           
 basetype:   TOK_VOID                                             { $$ = $1; }
@@ -79,7 +90,7 @@ function:   type TOK_IDENT '(' decl_list1 ')' block              { $$ = adopt2 (
           ;
 		
 function_list: function											 { $$ = $1; }
-		  | function_list function                               { $$ = adopt1 ($1, $3); free_ast ($2); }
+		  | function_list function                               { $$ = adopt1 ($1, $2); }
 		  |                                                      { $$ = 0; }
 		  ;
           
@@ -100,7 +111,7 @@ stmnt_list: statement                                            { $$ = $1; }
 		  |                                                      { $$ = 0; }
 		  ;
 		 
-vardecl:    type IDENT '=' expr ';'                              { $$ = adopt2 ($3, adopt1($1, $2), $4); free_ast($5); }
+vardecl:    type TOK_IDENT '=' expr ';'                          { $$ = adopt2 ($3, adopt1($1, $2), $4); free_ast($5); }
           ;
           
 while:      TOK_WHILE '(' expr ')' statement                     { $$ = adopt2 ($1, $3, $5); free_ast2 ($2, $4);}
@@ -150,9 +161,9 @@ unop:       '+' expr %prec POS                                   { $$ = adopt1sy
           | TOK_CHR expr                                         { $$ = adopt1sym ($1, $2, TOK_CHR); }
           ;
             
-allocator:  TOK_NEW basetype '(' expr ')'	                     { $$ = adopt2 ($1, $2, $3); free_ast2 ($3, $5); }
+allocator:  TOK_NEW basetype '(' expr ')'	                     { $$ = adopt2 ($1, $2, $4); free_ast2 ($3, $5); }
           | TOK_NEW basetype '(' ')'	                         { $$ = adopt2 ($1, $2, NULL); free_ast2 ($3, $4); }
-          | TOK_NEW basetype '[' expr ']'	                     { $$ = adopt2 ($1, $2, $3); free_ast2 ($3, $5); }
+          | TOK_NEW basetype '[' expr ']'	                     { $$ = adopt2 ($1, $2, $4); free_ast2 ($3, $5); }
           ;
 
 call:       TOK_IDENT '(' expr_list ')'	                         { $$ = adopt1 ($1, $3); free_ast2 ($2, $4);}
