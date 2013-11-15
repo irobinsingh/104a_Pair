@@ -13,6 +13,11 @@
 #include "stringset.h"
 #include "lyutils.h"
 
+
+astree* new_astree (const char* lexinfo) {
+	return new_astree (0,0,0,0,lexinfo);
+}
+
 astree* new_astree (int symbol, int filenr, int linenr, int offset,
                     const char* lexinfo) {
    astree* tree = new astree();
@@ -46,6 +51,7 @@ astree* adopt1sym (astree* root, astree* child, int symbol) {
    root->symbol = symbol;
    return root;
 }
+
 /*
 static void dump_node (FILE* outfile, astree* node) {
    fprintf (outfile, "%p->{%s(%d) %ld:%ld.%03ld \"%s\" [",
@@ -59,12 +65,17 @@ static void dump_node (FILE* outfile, astree* node) {
       fprintf (outfile, "%p", node->children.at(child));
    }
    fprintf (outfile, "]}");
-}
-*/
+}*/
+
+
 
 static void dump_node (FILE* outfile, astree* node) {
-   fprintf (outfile, "%s (%s)", get_yytname (node->symbol), node->lexinfo->c_str());
-   bool need_space = false;
+   //fprintf (outfile, "%s (%s)", get_yytname (node->symbol), node->lexinfo->c_str());
+   if(node->symbol == 0){
+		fprintf (outfile, "%s", node->lexinfo->c_str());
+   }else{
+		fprintf (outfile, "%s (%s)", get_yytname (node->symbol), node->lexinfo->c_str());
+   }   
 }
 
 /*

@@ -70,11 +70,10 @@ int main (int argc, char **argv) {
 
         }else{
             input_file = argv[optind];
-
+			
             // checks for the correct file extension
             if(input_file.compare(input_file.length()-2,
                                       input_file.length(),"oc")!= 0){
-
                 syserrprintf ("Unknown file extension");
                 set_exitstatus (1);
             }else{ // if the correct file extension was found
@@ -83,7 +82,7 @@ int main (int argc, char **argv) {
                 programName = baseName.substr(0, baseName.length()-3);
             }
         }
-
+		
         if(get_exitstatus() == 0){
             
             string command = CPP + " ";
@@ -96,57 +95,59 @@ int main (int argc, char **argv) {
             
             command += fileName;
             yyin = popen (command.c_str(), "r"); // opens the pipe
-            if (yyin == NULL) {
-            syserrprintf (command.c_str());
-        }else {
-
-            try {
-                string outputFileName = programName + ".tok";
-                tok_file_out = fopen (outputFileName.c_str(),"w");
-                
-                yyparse(); // this calls yylex() as needed
-                
-                fclose (tok_file_out); // close the str file
-
-            } catch (...) { // if there is an error with the file
-                syserrprintf ("File Error");
-        }
-
-
-
-            string outputFileNameSTR = programName + ".str";
-            string outputFileNameAST = programName + ".ast";
             
-            try {
-                
-                FILE *outputFileSTR = fopen (outputFileNameSTR.c_str(),"w");
+			if (yyin == NULL) {
+				syserrprintf (command.c_str());
+			
+			}else {
 
-                // writes the strings to the file
-                dump_stringset (outputFileSTR); 
-                fclose (outputFileSTR); // close the str file
-            } catch (...) { // if there is an error with the file
-               string errout = "File Error: Failed to write to " + outputFileNameSTR + ".";
-               syserrprintf (errout.c_str());
-            }
-            
-            try {
-                
-                FILE *outputFileAST = fopen (outputFileNameAST.c_str(),"w");
+				try {
+					string outputFileName = programName + ".tok";
+					tok_file_out = fopen (outputFileName.c_str(),"w");
+					
+					yyparse(); // this calls yylex() as needed
+					
+					fclose (tok_file_out); // close the str file
 
-                // prints the astree to a file
-                dump_astree (outputFileAST, yyparse_astree);
-                fclose (outputFileAST); // close the str file
+				} catch (...) { // if there is an error with the file
+					syserrprintf ("File Error");
+				}
 
-            } catch (...) { // if there is an error with the file
-                string errout2 = "File Error: Failed to write to " + outputFileNameAST + ".";
-                syserrprintf (errout2.c_str());
-            }
 
-        }
-    }
-    else{
-        syserrprintf ("Invalid Arguments");
-    }
+
+				string outputFileNameSTR = programName + ".str";
+				string outputFileNameAST = programName + ".ast";
+				
+				try {
+					
+					FILE *outputFileSTR = fopen (outputFileNameSTR.c_str(),"w");
+
+					// writes the strings to the file
+					dump_stringset (outputFileSTR); 
+					fclose (outputFileSTR); // close the str file
+				} catch (...) { // if there is an error with the file
+				   string errout = "File Error: Failed to write to " + outputFileNameSTR + ".";
+				   syserrprintf (errout.c_str());
+				}
+				
+				try {
+					
+					FILE *outputFileAST = fopen (outputFileNameAST.c_str(),"w");
+
+					// prints the astree to a file
+					dump_astree (outputFileAST, yyparse_astree);
+					fclose (outputFileAST); // close the str file
+
+				} catch (...) { // if there is an error with the file
+					string errout2 = "File Error: Failed to write to " + outputFileNameAST + ".";
+					syserrprintf (errout2.c_str());
+				}
+
+			}
+		}
+		else{
+			syserrprintf ("Invalid Arguments");
+		}
     return get_exitstatus();
 }
 
