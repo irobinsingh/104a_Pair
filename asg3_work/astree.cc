@@ -101,7 +101,7 @@ static void dump_astree_rec (FILE* outfile, astree* root, int depth) {
 }
 
 void dump_astree (FILE* outfile, astree* root) {
-   dump_astree_rec (outfile, root, 0);
+   dump_astree_rec (stdout, root, 0);
    fflush (NULL);
 }
 
