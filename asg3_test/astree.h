@@ -1,4 +1,4 @@
-// Assignment 2 CS 104a 
+// Assignment 3 CS 104a 
 // Modified By: Konstantin Litovskiy and Gahl Levy
 // Users Names: klitovsk and grlevy
 
@@ -20,7 +20,7 @@ struct astree {
    vector<astree*> children; // children of this n-way node
 };
 
-
+astree* new_astree (const char* lexinfo);
 astree* new_astree (int symbol, int filenr, int linenr, int offset,
                     const char* lexinfo);
 astree* adopt1 (astree* root, astree* child);

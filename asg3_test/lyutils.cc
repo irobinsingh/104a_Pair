@@ -1,4 +1,4 @@
-// Assignment 2 CS 104a 
+// Assignment 3 CS 104a
 // Modified By: Konstantin Litovskiy and Gahl Levy
 // Users Names: klitovsk and grlevy
 
@@ -67,6 +67,7 @@ void scanner_badtoken (char* lexeme) {
 
 int yylval_token (int symbol) {
    int offset = scan_offset - yyleng;
+   fprintf(tok_file_out, "yylval\n");
    yylval = new_astree (symbol, included_filenames.size() - 1,
                         scan_linenr, offset, yytext);
    // prints to the token file
@@ -84,7 +85,7 @@ void error_destructor (astree* tree) {
 }
 
 astree* new_parseroot (void) {
-   yyparse_astree = new_astree (TOK_ROOT, 0, 0, 0, "<<ROOT>>");
+   yyparse_astree = new_astree (0, 0, 0, 0, "program");
    return yyparse_astree;
 }
 

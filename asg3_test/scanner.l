@@ -1,6 +1,6 @@
 %{
 // $Id: scanner.l,v 1.3 2013-10-15 16:37:56-07 - - $
-// Assignment 2 CS 104a 
+// Assignment 3 CS 104a 
 // Authors: Konstantin Litovskiy and Gahl Levy
 // Users Names: klitovsk and grlevy
 

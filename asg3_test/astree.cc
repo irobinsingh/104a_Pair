@@ -1,4 +1,4 @@
-// Assignment 2 CS 104a 
+// Assignment 3 CS 104a 
 // Modified By: Konstantin Litovskiy and Gahl Levy
 // Users Names: klitovsk and grlevy
 
@@ -12,6 +12,11 @@
 #include "astree.h"
 #include "stringset.h"
 #include "lyutils.h"
+
+
+astree* new_astree (const char* lexinfo) {
+	return new_astree (0,0,0,0,lexinfo);
+}
 
 astree* new_astree (int symbol, int filenr, int linenr, int offset,
                     const char* lexinfo) {
@@ -46,6 +51,7 @@ astree* adopt1sym (astree* root, astree* child, int symbol) {
    root->symbol = symbol;
    return root;
 }
+
 /*
 static void dump_node (FILE* outfile, astree* node) {
    fprintf (outfile, "%p->{%s(%d) %ld:%ld.%03ld \"%s\" [",
@@ -59,12 +65,17 @@ static void dump_node (FILE* outfile, astree* node) {
       fprintf (outfile, "%p", node->children.at(child));
    }
    fprintf (outfile, "]}");
-}
-*/
+}*/
+
+
 
 static void dump_node (FILE* outfile, astree* node) {
-   fprintf (outfile, "%s (%s)", get_yytname (node->symbol), node->lexinfo->c_str());
-   bool need_space = false;
+   //fprintf (outfile, "%s (%s)", get_yytname (node->symbol), node->lexinfo->c_str());
+   if(node->symbol == 0){
+		fprintf (outfile, "%s", node->lexinfo->c_str());
+   }else{
+		fprintf (outfile, "%s (%s)", get_yytname (node->symbol), node->lexinfo->c_str());
+   }   
 }
 
 /*
@@ -110,6 +121,7 @@ void free_ast (astree* root) {
       root->children.pop_back();
       free_ast (child);
    }
+    // prints debug info
    DEBUGF ('f', "free [%X]-> %d:%d.%d: %s: \"%s\")\n",
            (uintptr_t) root, root->filenr, root->linenr, root->offset,
            get_yytname (root->symbol), root->lexinfo->c_str());
