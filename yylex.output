@@ -1,0 +1,22 @@
+flex version 2.5.35 Apple(flex-31) usage statistics:
+  scanner options: -dpsvI8 -Cem -oyylex.cc
+  312/2000 NFA states
+  112/1000 DFA states (643 words)
+  53 rules
+  Compressed tables always back-up
+  1/40 start conditions
+  172 epsilon states, 83 double epsilon states
+  21/100 character classes needed 206/500 words of storage, 0 reused
+  1774 state/nextstate pairs created
+  290/1484 unique/duplicate transitions
+  117/1000 base-def entries created
+  193/2000 (peak 277) nxt-chk entries created
+  20/2500 (peak 235) template nxt-chk entries created
+  0 empty table entries
+  5 protos created
+  5 templates created, 69 uses
+  47/256 equivalence classes created
+  4/256 meta-equivalence classes created
+  0 (1 saved) hash collisions, 181 DFAs equal
+  0 sets of reallocations needed
+  923 total table entries needed

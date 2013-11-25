@@ -15,6 +15,9 @@ using namespace std;
 #include <wait.h>
 #include <unistd.h>
 
+#include <iostream>
+#include <fstream>
+
 #include "auxlib.h"
 #include "astree.h"
 #include "stringset.h"
@@ -38,7 +41,6 @@ int main (int argc, char **argv) {
     char * fileName;
     yy_flex_debug = 0;
     yydebug = 0;
-    symTable = new SymbolTable(NULL);
 
     //uses getopt to parse the command line arguments
     while((arg =  getopt(argc, argv, "ly@:D:")) != -1){ 
@@ -147,7 +149,26 @@ int main (int argc, char **argv) {
                     
 				}
                 
-                astree_sym (symTable, yyparse_astree);
+                FILE *symfile;
+                symfile = fopen ("symfile.txt", "w");
+                
+    
+                
+                
+                SymbolTable symTable = new SymbolTable(NULL);
+                symTable.addSymbol("i","int");
+                symTable.addSymbol("d","char()");
+                symTable.addSymbol("z","int");
+                SymbolTable symtable1 = symTable.enterFunction("add", "void(int,int)");
+                symtable1.addSymbol("a","int");
+                symtable1.addSymbol("b","char()");
+                symtable1.addSymbol("c","int");                
+                symTable.dump(symfile, 0);
+
+
+                fclose(symfile);
+                
+                
                 
 
 			}
