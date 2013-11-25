@@ -1,0 +1,10 @@
+#!/bin/sh -x
+#
+mkdir test_output
+mv *.oc test_output/
+mv *.tok test_output/
+mv *.str test_output/
+mv *.ast test_output/
+mv *.out test_output/
+mv *.log test_output/
+mv *.err test_output/

@@ -1,0 +1,9 @@
+		
+strctdf_list: structdef											 { $$ = $1; }
+		  | strctdf_list structdef                               { $$ = adopt1 ($1, $2);}
+		  ;
+		  
+		
+function_list: function											 { $$ = $1; }
+		  | function_list function                               { $$ = adopt1 ($1, $2); }
+		  ;
