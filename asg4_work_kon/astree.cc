@@ -108,17 +108,24 @@ static void typeCheck (SymbolTable* symTable, astree* node) {
                 printf(node->children[1]->lexinfo->c_str());
                 
                 if (strcmp( nodeType(node->children[1]->children[1]->children[0], symTable).c_str() , nodeType(node->children[1]->children[2]->children[0], symTable).c_str()  ) != 0) {
-                    printf( "ERROR: THE TYPES DONT MATCH: %s  %s", nodeType(node->children[1]->children[1]->children[0], symTable).c_str() , nodeType(node->children[1]->children[2]->children[0], symTable).c_str() );
+                    printf( "\nERROR: THE TYPES DONT MATCH: %s  %s\n", nodeType(node->children[1]->children[1]->children[0], symTable).c_str() , nodeType(node->children[1]->children[2]->children[0], symTable).c_str() );
                 }
                 
+                break;
+                
             }
-            else if (strcmp( node->children[0]->lexinfo->c_str() , node->children[1]->lexinfo->c_str() ) != 0) {
-                printf( "ERROR: THE TYPES DONT MATCH: %s  %s",node->children[0]->lexinfo->c_str() , node->children[1]->lexinfo->c_str() );
-                }
+            
+            string s1 =  get_yytname (node->children[0]->symbol);
+            string s2 =  get_yytname (node->children[1]->symbol);
+          
+            
+            if (s2.find(s1) == std::string::npos) {
+                printf( "\nERROR: THE TYPES DONT MATCH: %s  %s\n",node->children[0]->lexinfo->c_str() , node->children[1]->lexinfo->c_str() );
+            }
             break;
             
-        default:
-            printf("\n");
+        //default:
+           // printf("\n");
     }
 
 }
