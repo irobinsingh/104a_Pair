@@ -12,6 +12,7 @@
 #include "astree.h"
 #include "stringset.h"
 #include "lyutils.h"
+#include "symtable.h"
 
 
 astree* new_astree (const char* lexinfo) {
@@ -114,8 +115,9 @@ static void node_to_sym (SymbolTable *symTable, astree* node) {
 	string block = "block";
 	string while_s = "while";
 	string if_s = "if";
-	string else_s = "if";
-   
+	string else_s = "else";
+	string struct_C = "structdef";
+      
     if(strcmp(node->lexinfo->c_str(), block.c_str()) == 0 || strcmp(node->lexinfo->c_str(), while_s.c_str()) == 0 || strcmp(node->lexinfo->c_str(), if_s.c_str()) == 0  || strcmp(node->lexinfo->c_str(), else_s.c_str()) == 0 || strcmp(node->lexinfo->c_str(), statement.c_str()) == 0){
 		if(strcmp(node->lexinfo->c_str(), statement.c_str()) == 0){
 			printf("****statement\n");
@@ -133,12 +135,10 @@ static void node_to_sym (SymbolTable *symTable, astree* node) {
 			printf("****if\n");
 			symTable = symTable->enterBlock();
 		}
-		
 		if(strcmp(node->lexinfo->c_str(), else_s.c_str()) == 0){
 			printf("****else\n");
 			symTable = symTable->enterBlock();
 		}
-		
 	}else{
 		if (strcmp(node->lexinfo->c_str(), vardecl.c_str()) == 0){
 			if(node->children[0]->children[0]->children[0]->symbol == TOK_ARRAY){
@@ -185,20 +185,33 @@ static void node_to_sym (SymbolTable *symTable, astree* node) {
 						node->offset,
 						node->children[0]->children[0]->lexinfo->c_str());
 				}
-				//symTable.addSymbol(node->children[0]->children[0]->children[0]->lexinfo, node->filenr, node->linenr, node->offset, node->children[0]->children[0]->lexinfo);
 			}
 		}
 	}
+	
+	type_check(symTable, node);
+	
 }
 
 static void astree_to_sym_rec (SymbolTable *symTable, astree* root, int depth) {
    if (root == NULL) return;
-   //fprintf (outfile, "%*s", depth * 4, "");
    node_to_sym (symTable, root);
-   //fprintf (outfile, "\n");
-   for (size_t child = 0; child < root->children.size(); ++child) {
-      astree_to_sym_rec (symTable, root->children[child], depth + 1);
-   }
+   
+   
+	string struct_s = "structdef";
+	if(strcmp(root->lexinfo->c_str(), struct_s.c_str()) == 0){
+			printf("****struct\n");
+			SymbolTable *newStruct = new SymbolTable(NULL);
+			struct_defs.push_back(newStruct);
+			newStruct->addSymbol(root->children[0]->lexinfo->c_str(),"struct");
+			newStruct = newStruct->enterBlock();
+			astree_to_sym_rec(newStruct, root->children[0], 0);
+			return;
+	}else{
+		for (size_t child = 0; child < root->children.size(); ++child) {
+			astree_to_sym_rec (symTable, root->children[child], depth + 1);
+		}
+	}
 }
 
 void astree_to_sym (SymbolTable *symTable, astree* root) {
@@ -206,5 +219,23 @@ void astree_to_sym (SymbolTable *symTable, astree* root) {
    fflush (NULL);
 }
 
+void type_check (SymbolTable *symTable, astree* node){
+	char operaterer = node->symbol;
+	
+	/*
+	switch(operaterer){
+	default:
+	break;
+	'=':
+	break;
+	
+	}*/
+}
+
+void dump_structs (FILE* output){
+	for (size_t size = 0; size < struct_defs.size(); ++size) {
+			struct_defs[size]->dump(output, 0);
+		}
+}
 RCSC("$Id: astree.cc,v 1.14 2013-10-10 18:48:18-07 - - $")
 

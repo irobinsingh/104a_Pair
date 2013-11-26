@@ -8,6 +8,7 @@
 using namespace std;
 
 #include <errno.h>
+#include <vector>
 #include <libgen.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -24,6 +25,7 @@ using namespace std;
 const string CPP = "/usr/bin/cpp";
 const size_t LINESIZE = 1024;
 SymbolTable *global_sym_table = NULL;
+vector<SymbolTable*> struct_defs; 
 FILE* tok_file_out = NULL;
 extern int yy_flex_debug;
 extern int yydebug;
@@ -166,7 +168,7 @@ int main (int argc, char **argv) {
 					// prints the astree to a file
 					global_sym_table->dump (stdout,0);
 					fclose (outputFileSYM); // close the str file
-
+					dump_structs(stdout);
 				} catch (...) { // if there is an error with the file
 					string errout2 = "File Error: Failed to write to " + outputFileNameSYM + ".";
 					syserrprintf (errout2.c_str());

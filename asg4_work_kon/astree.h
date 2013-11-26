@@ -12,6 +12,8 @@ using namespace std;
 #include "auxlib.h"
 #include "symtable.h"
 
+extern vector<SymbolTable*> struct_defs; 
+
 struct astree {
    int symbol;               // token code
    size_t filenr;            // index into filename stack
@@ -33,6 +35,8 @@ void yyprint (FILE* outfile, unsigned short toknum, astree* yyvaluep);
 void free_ast (astree* tree);
 void free_ast2 (astree* tree1, astree* tree2);
 void astree_to_sym (SymbolTable *symTable, astree* root);
+void type_check (SymbolTable *symTable, astree* node);
+void dump_structs (FILE* output);
 
 RCSH("$Id: astree.h,v 1.3 2013-09-20 12:23:31-07 - - $")
 #endif
