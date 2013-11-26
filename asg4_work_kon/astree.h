@@ -38,5 +38,8 @@ void astree_to_sym (SymbolTable *symTable, astree* root);
 void type_check (SymbolTable *symTable, astree* node);
 void dump_structs (FILE* output);
 
+void typeCheck_astree (astree* root);
+
+
 RCSH("$Id: astree.h,v 1.3 2013-09-20 12:23:31-07 - - $")
 #endif

@@ -167,6 +167,9 @@ int main (int argc, char **argv) {
 
 					// prints the astree to a file
 					global_sym_table->dump (stdout,0);
+                    
+                    //typeCheck_astree (yyparse_astree);
+                    
 					fclose (outputFileSYM); // close the str file
 					dump_structs(stdout);
 				} catch (...) { // if there is an error with the file

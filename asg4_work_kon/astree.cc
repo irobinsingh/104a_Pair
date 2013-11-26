@@ -75,10 +75,71 @@ static void dump_astree_rec (FILE* outfile, astree* root, int depth) {
    }
 }
 
+
 void dump_astree (FILE* outfile, astree* root) {
    dump_astree_rec (outfile, root, 0);
    fflush (NULL);
 }
+
+
+static string nodeType(astree* node, SymbolTable* symTable) {
+    
+    if (node->symbol == TOK_IDENT) {
+         return symTable->lookup(node->lexinfo->c_str());
+        
+    }
+    else {
+        
+        return node->lexinfo->c_str();
+    }
+    
+}
+
+
+
+static void typeCheck (SymbolTable* symTable, astree* node) {
+    switch (node->symbol)
+    {
+        case '=':
+            if (node->children.size() != 2) {
+                break;
+            }
+            if (strcmp(node->children[1]->lexinfo->c_str() , "binop") == 0) {
+                printf(node->children[1]->lexinfo->c_str());
+                
+                if (strcmp( nodeType(node->children[1]->children[1]->children[0], symTable).c_str() , nodeType(node->children[1]->children[2]->children[0], symTable).c_str()  ) != 0) {
+                    printf( "ERROR: THE TYPES DONT MATCH: %s  %s", nodeType(node->children[1]->children[1]->children[0], symTable).c_str() , nodeType(node->children[1]->children[2]->children[0], symTable).c_str() );
+                }
+                
+            }
+            else if (strcmp( node->children[0]->lexinfo->c_str() , node->children[1]->lexinfo->c_str() ) != 0) {
+                printf( "ERROR: THE TYPES DONT MATCH: %s  %s",node->children[0]->lexinfo->c_str() , node->children[1]->lexinfo->c_str() );
+                }
+            break;
+            
+        default:
+            printf("\n");
+    }
+
+}
+
+/*
+static void typeCheck_astree_rec (astree* root, int depth) {
+    if (root == NULL) return;
+    typeCheck_node (root);
+    for (size_t child = 0; child < root->children.size(); ++child) {
+        typeCheck_astree_rec (root->children[child], depth + 1);
+    }
+}
+
+
+void typeCheck_astree (astree* root) {
+    typeCheck_astree_rec (root, 0);
+    fflush (NULL);
+}
+ */
+
+
 
 void yyprint (FILE* outfile, unsigned short toknum, astree* yyvaluep) {
    DEBUGF ('f', "toknum = %d, yyvaluep = %p\n", toknum, yyvaluep);
@@ -189,7 +250,7 @@ static void node_to_sym (SymbolTable *symTable, astree* node) {
 		}
 	}
 	
-	type_check(symTable, node);
+	typeCheck(symTable, node);
 	
 }
 
