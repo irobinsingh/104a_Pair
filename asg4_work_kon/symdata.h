@@ -13,7 +13,7 @@ class SymData {
 	string symbol_type;
 
 public:
-  SymData(int file, int line, int offset, string type){
+  SymData(string type, int file, int line, int offset){
 	symbol_file_number = file;
 	symbol_line_number = line;
 	symbol_offset = offset;

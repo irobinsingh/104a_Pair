@@ -24,7 +24,7 @@ class SymbolTable {
   SymbolTable* parent;
 
   // The mapping of identifiers to their types
-  map<string,string> mapping;
+  map<string,SymData*> mapping;
   // All symbol tables beneath this one (the sub-scopes)
   // are keps in this map.
   // Function blocks are stored under their name which
@@ -53,14 +53,13 @@ public:
   //
   // Example: To enter the function "void add(int a, int b)",
   //          use "currentSymbolTable->enterFunction("add", "void(int,int)");
-  SymbolTable* enterFunction(string name,
-                             string signature);
+  SymbolTable* enterFunction(string name, string signature, int file, int line, int offset);
 
   // Add a symbol with the provided name and type to the current table.
   //
   // Example: To add the variable declaration "int i = 23;"
   //          use "currentSymbolTable->addSymbol("i", "int");
-  void addSymbol(string name, string type);
+  void addSymbol(string name, string type, int file, int line, int offset);
 
   // Dumps the content of the symbol table and all its inner scopes
   // depth denotes the level of indention.

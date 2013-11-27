@@ -40,9 +40,10 @@ SymbolTable* SymbolTable::enterBlock() {
 //
 // Example: To enter the function "void add(int a, int b)",
 //          call "currentSymbolTable->enterFunction("add", "void(int,int)");
-SymbolTable* SymbolTable::enterFunction(string name, string signature) {
+SymbolTable* SymbolTable::enterFunction(string name,  string signature, int file, int line, int offset) {
   // Add a new symbol using the signature as type
-  this->addSymbol(name, signature);
+  SymData *newData = new SymData(signature, file, line, offset);
+  this->mapping[name] = newData;
   // Create the child symbol table
   SymbolTable* child = new SymbolTable(this);
   // Store the symbol table under the name of the function
@@ -56,10 +57,10 @@ SymbolTable* SymbolTable::enterFunction(string name, string signature) {
 //
 // Example: To add the variable declaration "int i = 23;"
 //          use "currentSymbolTable->addSymbol("i", "int");
-void SymbolTable::addSymbol(string name, string type) {
+void SymbolTable::addSymbol(string name, string type, int file, int line, int offset) {
   // Use the variable name as key for the identifier mapping
-  
-  this->mapping[name] = type;
+  SymData *newData = new SymData(type, file, line, offset);
+  this->mapping[name] = newData;
 }
 
 // Dumps the content of the symbol table and all its inner scopes
@@ -68,16 +69,19 @@ void SymbolTable::addSymbol(string name, string type) {
 // Example: "global_symtable->dump(symfile, 0)"
 void SymbolTable::dump(FILE* symfile, int depth) {
   // Create a new iterator for <string,string>
-  std::map<string,string>::iterator it;
+  std::map<string,SymData*>::iterator it;
   // Iterate over all entries in the identifier mapping
   for (it = this->mapping.begin(); it != this->mapping.end(); ++it) {
     // The key of the mapping entry is the name of the symbol
     const char* name = it->first.c_str();
     // The value of the mapping entry is the type of the symbol
-    const char* type = it->second.c_str();
+    const char* type = it->second->get_type().c_str();
+	int file = it->second->get_file_number();
+	int line = it->second->get_line_number();
+	int offset = it->second->get_offset();
     // Print the symbol as "name {blocknumber} type"
     // indented by 3 spaces for each level
-    fprintf(symfile, "%*s%s {%d} %s\n", 3*depth, "", name, this->number, type);
+    fprintf(symfile, "%*s%s (%d, %d, %d) {%d} %s\n", 3*depth, "", name, file, line, offset, this->number, type);
     // If the symbol we just printed is actually a function
     // then we can find the symbol table of the function by the name
     if (this->subscopes.count(name) > 0) {
@@ -106,7 +110,7 @@ string SymbolTable::lookup(string name) {
   // Look up "name" in the identifier mapping of the current block
   if (this->mapping.count(name) > 0) {
     // If we found an entry, just return its type
-    return this->mapping[name];
+    return this->mapping[name]->get_type();
   }
   // Otherwise, if there is a surrounding scope
   if (this->parent != NULL) {
@@ -134,7 +138,7 @@ string SymbolTable::parentFunction(SymbolTable* innerScope) {
     // in the identifier mapping
     if (it->second == innerScope && this->mapping.count(it->first) > 0) {
       // Then it must be the surrounding function, so return its type/signature
-      return this->mapping[it->first];
+      return this->mapping[it->first]->get_type();
     }
   }
   // If we did not find a surrounding function
