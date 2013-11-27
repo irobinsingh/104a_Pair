@@ -13,6 +13,7 @@ using namespace std;
 #include "symtable.h"
 
 extern vector<SymbolTable*> struct_defs; 
+extern SymbolTable *global_sym_table;
 
 struct astree {
    int symbol;               // token code
@@ -34,7 +35,7 @@ void dump_astree (FILE* outfile, astree* root);
 void yyprint (FILE* outfile, unsigned short toknum, astree* yyvaluep);
 void free_ast (astree* tree);
 void free_ast2 (astree* tree1, astree* tree2);
-void astree_to_sym (SymbolTable *symTable, astree* root);
+void astree_to_sym (astree* root);
 void type_check (SymbolTable *symTable, astree* node);
 void dump_structs (FILE* output);
 

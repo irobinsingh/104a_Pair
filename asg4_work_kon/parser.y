@@ -135,18 +135,18 @@ expr_list:  expr                                                 { $$ = $1; }
           | expr_list ',' expr                                   { $$ = adopt1 ($1, $3); free_ast ($2); }
           ;
 
-binop:      expr '=' expr                                        { $$ = adopt2 (adopt1 (new_astree("binop"),$2), $1, $3); }
-          | expr TOK_EQ expr                                     { $$ = adopt2 (adopt1 (new_astree("binop"),$2), $1, $3); }
-          | expr TOK_NE expr                                     { $$ = adopt2 (adopt1 (new_astree("binop"),$2), $1, $3); }
-          | expr '<' expr                                        { $$ = adopt2 (adopt1 (new_astree("binop"),$2), $1, $3); }
-          | expr TOK_LE expr                                     { $$ = adopt2 (adopt1 (new_astree("binop"),$2), $1, $3); }
-          | expr '>' expr                                        { $$ = adopt2 (adopt1 (new_astree("binop"),$2), $1, $3); }
-          | expr TOK_GE expr                                     { $$ = adopt2 (adopt1 (new_astree("binop"),$2), $1, $3); }
-          | expr '+' expr                                        { $$ = adopt2 (adopt1 (new_astree("binop"),$2), $1, $3); }
-          | expr '-' expr                                        { $$ = adopt2 (adopt1 (new_astree("binop"),$2), $1, $3); }
-          | expr '*' expr                                        { $$ = adopt2 (adopt1 (new_astree("binop"),$2), $1, $3); }
-          | expr '/' expr                                        { $$ = adopt2 (adopt1 (new_astree("binop"),$2), $1, $3); }
-          | expr '%' expr                                        { $$ = adopt2 (adopt1 (new_astree("binop"),$2), $1, $3); }
+binop:      expr '=' expr                                        { $$ = adopt1 (new_astree("binop"),adopt2 ($2, $1, $3)); }
+          | expr TOK_EQ expr                                     { $$ = adopt1 (new_astree("binop"),adopt2 ($2, $1, $3)); }
+          | expr TOK_NE expr                                     { $$ = adopt1 (new_astree("binop"),adopt2 ($2, $1, $3)); }
+          | expr '<' expr                                        { $$ = adopt1 (new_astree("binop"),adopt2 ($2, $1, $3)); }
+          | expr TOK_LE expr                                     { $$ = adopt1 (new_astree("binop"),adopt2 ($2, $1, $3)); }
+          | expr '>' expr                                        { $$ = adopt1 (new_astree("binop"),adopt2 ($2, $1, $3)); }
+          | expr TOK_GE expr                                     { $$ = adopt1 (new_astree("binop"),adopt2 ($2, $1, $3)); }
+          | expr '+' expr                                        { $$ = adopt1 (new_astree("binop"),adopt2 ($2, $1, $3)); }
+          | expr '-' expr                                        { $$ = adopt1 (new_astree("binop"),adopt2 ($2, $1, $3)); }
+          | expr '*' expr                                        { $$ = adopt1 (new_astree("binop"),adopt2 ($2, $1, $3)); }
+          | expr '/' expr                                        { $$ = adopt1 (new_astree("binop"),adopt2 ($2, $1, $3)); }
+          | expr '%' expr                                        { $$ = adopt1 (new_astree("binop"),adopt2 ($2, $1, $3)); }
           ;
 
 unop:       '+' expr %prec TOK_POS                               { $$ = adopt1sym ($1, $2, TOK_POS); }

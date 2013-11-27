@@ -24,7 +24,7 @@ using namespace std;
 
 const string CPP = "/usr/bin/cpp";
 const size_t LINESIZE = 1024;
-SymbolTable *global_sym_table = NULL;
+extern SymbolTable *global_sym_table;
 vector<SymbolTable*> struct_defs; 
 FILE* tok_file_out = NULL;
 extern int yy_flex_debug;
@@ -41,8 +41,6 @@ int main (int argc, char **argv) {
     char * fileName;
     yy_flex_debug = 0;
     yydebug = 0;
-	SymbolTable* symTable = new SymbolTable(NULL);
-	global_sym_table = symTable;
 
     //uses getopt to parse the command line arguments
     while((arg =  getopt(argc, argv, "ly@:D:")) != -1){ 
@@ -150,14 +148,15 @@ int main (int argc, char **argv) {
 					syserrprintf (errout2.c_str());
 				}
 				
-				astree_to_sym(symTable, yyparse_astree);
+				astree_to_sym(yyparse_astree);
 				
 				try {
 					
 					FILE *outputFileSYM = fopen (outputFileNameSYM.c_str(),"w");
 
-					// prints the astree to a file
-					global_sym_table->dump (stdout,0);
+					// prints the sym table to a file
+					global_sym_table->dump (outputFileSYM,0);
+					//global_sym_table->dump (stdout,0);
                     
                     //typeCheck_astree (yyparse_astree);
                     
