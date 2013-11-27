@@ -38,6 +38,7 @@ void free_ast2 (astree* tree1, astree* tree2);
 void astree_to_sym (astree* root);
 void type_check (SymbolTable *symTable, astree* node);
 void dump_structs (FILE* output);
+void typeCheck (SymbolTable* symTable, astree* root);
 
 void typeCheck_astree (astree* root);
 

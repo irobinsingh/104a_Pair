@@ -158,7 +158,7 @@ int main (int argc, char **argv) {
 					global_sym_table->dump (outputFileSYM,0);
 					//global_sym_table->dump (stdout,0);
                     
-                    //typeCheck_astree (yyparse_astree);
+                    typeCheck (global_sym_table, yyparse_astree);
                     
 					fclose (outputFileSYM); // close the str file
 					dump_structs(stdout);

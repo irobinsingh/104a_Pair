@@ -90,6 +90,89 @@ void dump_astree (FILE* outfile, astree* root) {
 }
 
 
+
+
+static void binop_rec(SymbolTable* symTable, astree* root, int type) {
+    
+	if (root == NULL) return;
+    
+	if (type == -1) {
+        type = root->symbol;
+	}
+    
+    int s1 =  root->symbol;
+    
+    
+    switch (s1) {
+            
+        case TOK_INTCON: {
+            s1 = TOK_INT;
+            
+        }
+            
+        case TOK_CHARCON: {
+            s1 = TOK_CHAR;
+            
+        }
+            
+        default: {
+            
+            if (s1 != TOK_IDENT && s1 > 0 ) {
+                s1 = root->symbol;
+            }
+            
+        }
+            
+    }
+    
+    
+    
+    if (type != s1) {
+        
+        printf( "\nERROR: THE TYPES DONT MATCH:" );
+        
+        return;
+        
+    }
+    
+    
+    for (size_t child = 0; child < root->children.size(); ++child) {
+        binop_rec (symTable, root, type);
+    }
+    
+}
+
+void typeCheck (SymbolTable* symTable, astree* root) {
+    printf("HELLO:");
+    
+    if (root == NULL) return;
+    
+    switch (root->symbol)   {
+        	
+        case 'binop': {
+            
+            binop_rec(symTable, root, -1);
+            
+    	}
+    }
+    
+    
+    for (size_t child = 0; child < root->children.size(); ++child) {
+        typeCheck (symTable, root->children[child]);
+    }
+    
+}
+
+
+
+
+
+
+
+
+
+/*
+
 static string nodeType(astree* node, SymbolTable* symTable) {
     
     if (node->symbol == TOK_IDENT) {
@@ -136,7 +219,7 @@ static void typeCheck (SymbolTable* symTable, astree* node) {
 
 }
 
-/*
+
 static void typeCheck_astree_rec (astree* root, int depth) {
     if (root == NULL) return;
     typeCheck_node (root);
