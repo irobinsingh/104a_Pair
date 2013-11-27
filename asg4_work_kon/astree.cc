@@ -14,6 +14,7 @@
 #include "lyutils.h"
 #include "symtable.h"
 
+SymbolTable *currentSymTable;
 
 astree* new_astree (const char* lexinfo) {
 	return new_astree (0,0,0,0,lexinfo);
@@ -63,15 +64,21 @@ static void dump_node (FILE* outfile, astree* node) {
    }else{
 		fprintf (outfile, "%s (%s)", get_yytname (node->symbol), node->lexinfo->c_str());
    }   
+
+   fprintf(outfile, " chldrn: %d", node->children.size());
 }
 
 static void dump_astree_rec (FILE* outfile, astree* root, int depth) {
-   if (root == NULL) return;
-   fprintf (outfile, "%*s", depth * 4, "");
-   dump_node (outfile, root);
-   fprintf (outfile, "\n");
-   for (size_t child = 0; child < root->children.size(); ++child) {
-      dump_astree_rec (outfile, root->children[child], depth + 1);
+   if (root == NULL){
+	   return;
+   }else{
+	   fprintf (outfile, "%*s", depth * 4, "");
+	   dump_node (outfile, root);
+	   fprintf (outfile, "\n");
+
+	   for (size_t child = 0; child < root->children.size(); ++child) {
+		   dump_astree_rec (outfile, root->children[child], depth + 1);
+	   }
    }
 }
 
@@ -94,8 +101,6 @@ static string nodeType(astree* node, SymbolTable* symTable) {
     }
     
 }
-
-
 
 static void typeCheck (SymbolTable* symTable, astree* node) {
     switch (node->symbol)
@@ -146,8 +151,6 @@ void typeCheck_astree (astree* root) {
 }
  */
 
-
-
 void yyprint (FILE* outfile, unsigned short toknum, astree* yyvaluep) {
    DEBUGF ('f', "toknum = %d, yyvaluep = %p\n", toknum, yyvaluep);
    if (is_defined_token (toknum)) {
@@ -176,114 +179,195 @@ void free_ast2 (astree* tree1, astree* tree2) {
    free_ast (tree2);
 }
 
-static void node_to_sym (SymbolTable *symTable, astree* node) {
-	string vardecl = "vardecl";
-	string function = "function";
-	string statement = "statement";
-	string block = "block";
-	string while_s = "while";
-	string if_s = "if";
-	string else_s = "else";
-	string struct_C = "structdef";
-      
-    if(strcmp(node->lexinfo->c_str(), block.c_str()) == 0 || strcmp(node->lexinfo->c_str(), while_s.c_str()) == 0 || strcmp(node->lexinfo->c_str(), if_s.c_str()) == 0  || strcmp(node->lexinfo->c_str(), else_s.c_str()) == 0 || strcmp(node->lexinfo->c_str(), statement.c_str()) == 0){
-		if(strcmp(node->lexinfo->c_str(), statement.c_str()) == 0){
-			printf("****statement\n");
-			symTable = symTable->enterBlock();
-		}
-		if(strcmp(node->lexinfo->c_str(), block.c_str()) == 0){
-			printf("****block\n");
-			symTable = symTable->enterBlock();
-		}
-		if(strcmp(node->lexinfo->c_str(), while_s.c_str()) == 0){
-			printf("****while\n");
-			symTable = symTable->enterBlock();
-		}
-		if(strcmp(node->lexinfo->c_str(), if_s.c_str()) == 0){
-			printf("****if\n");
-			symTable = symTable->enterBlock();
-		}
-		if(strcmp(node->lexinfo->c_str(), else_s.c_str()) == 0){
-			printf("****else\n");
-			symTable = symTable->enterBlock();
-		}
-	}else{
-		if (strcmp(node->lexinfo->c_str(), vardecl.c_str()) == 0){
-			if(node->children[0]->children[0]->children[0]->symbol == TOK_ARRAY){
-				printf("%s _ %d,%d,%d _ %s%s\n", 
-					node->children[0]->children[0]->children[1]->lexinfo->c_str(), 
-					node->filenr, 
-					node->linenr, 
-					node->offset, 
-					node->children[0]->children[0]->lexinfo->c_str(),
-					node->children[0]->children[0]->children[0]->lexinfo->c_str());
-				
-				string tempStr = node->children[0]->children[0]->lexinfo->c_str();
-				tempStr.append(node->children[0]->children[0]->children[0]->lexinfo->c_str());
-				
-				symTable->addSymbol(node->children[0]->children[0]->children[1]->lexinfo->c_str(), tempStr);
-			}else{
-				printf("%s _ %d,%d,%d _ %s\n",
-					node->children[0]->children[0]->children[0]->lexinfo->c_str(),
-					node->filenr,
-					node->linenr,
-					node->offset,
-					node->children[0]->children[0]->lexinfo->c_str());
-				
-				symTable->addSymbol(node->children[0]->children[0]->children[0]->lexinfo->c_str(),
-						node->children[0]->children[0]->lexinfo->c_str());
-			}
-			symTable->addSymbol("test","test");
-			//symTable->addSymbol(node->children[0]->children[0]->children[0]->lexinfo->c_str(), strcat(strcat("",node->children[0]->children[0]->lexinfo->c_str()), node->children[0]->children[0]->children[0]->lexinfo->c_str()));
-		}else{
-			if (strcmp(node->lexinfo->c_str(), function.c_str()) == 0){
-				if(node->children[0]->children[0]->children[0]->symbol == TOK_ARRAY){
-				printf("%s _ %d,%d,%d _ %s%s()\n\t", 
-					node->children[0]->children[0]->children[1]->lexinfo->c_str(), 
-					node->filenr, 
-					node->linenr, 
-					node->offset, 
-					node->children[0]->children[0]->lexinfo->c_str(),
-					node->children[0]->children[0]->children[0]->lexinfo->c_str());
-				}else{
-					printf("%s _ %d,%d,%d _ %s()\n\t",
-						node->children[0]->children[0]->children[0]->lexinfo->c_str(),
-						node->filenr,
-						node->linenr,
-						node->offset,
-						node->children[0]->children[0]->lexinfo->c_str());
-				}
-			}
-		}
+static int lexInfoToSwitch(const char* lexinfo){
+	string struct_s = "structdef"; 		// 1
+	
+	string vardecl = "vardecl"; 		// 2
+	string declaration = "declaration"; // 3
+	
+	string function = "function";		// 4
+	
+	string block = "block";				// 5
+	string while_s = "while";			// 6
+	string if_s = "if";					// 7
+	string else_s = "else";				// 8
+	
+	int lexReturn = 0;
+	
+	if(strcmp(lexinfo, struct_s.c_str()) == 0){
+		lexReturn = 1;
 	}
-	
-	typeCheck(symTable, node);
-	
+	if(strcmp(lexinfo, vardecl.c_str()) == 0){
+		lexReturn = 2;
+	}
+	if(strcmp(lexinfo, declaration.c_str()) == 0){
+		lexReturn = 3;
+	}
+	if(strcmp(lexinfo, function.c_str()) == 0){
+		lexReturn = 4;
+	}
+	if(strcmp(lexinfo, block.c_str()) == 0){
+		lexReturn = 5;
+	}
+	if(strcmp(lexinfo, while_s.c_str()) == 0){
+		lexReturn = 6;
+	}
+	if(strcmp(lexinfo, if_s.c_str()) == 0){
+		lexReturn = 7;
+	}
+	if(strcmp(lexinfo, else_s.c_str()) == 0){
+		lexReturn = 8;
+	}
+		
+	return lexReturn;
 }
 
-static void astree_to_sym_rec (SymbolTable *symTable, astree* root, int depth) {
-   if (root == NULL) return;
-   node_to_sym (symTable, root);
-   
-   
-	string struct_s = "structdef";
-	if(strcmp(root->lexinfo->c_str(), struct_s.c_str()) == 0){
+static void astree_to_sym_rec (SymbolTable * symTable, astree* root) {
+}
+
+static void astree_to_sym_rec (astree* root) {
+	if (root == NULL) return;
+
+	switch(lexInfoToSwitch(root->lexinfo->c_str())){
+		case 1:{//struct definition
 			printf("****struct\n");
 			SymbolTable *newStruct = new SymbolTable(NULL);
 			struct_defs.push_back(newStruct);
 			newStruct->addSymbol(root->children[0]->lexinfo->c_str(),"struct");
 			newStruct = newStruct->enterBlock();
-			astree_to_sym_rec(newStruct, root->children[0], 0);
+			astree_to_sym_rec(newStruct, root->children[1]);
 			return;
-	}else{
-		for (size_t child = 0; child < root->children.size(); ++child) {
-			astree_to_sym_rec (symTable, root->children[child], depth + 1);
+			break;
 		}
+		case 2:{//variable declaration
+			printf("current block number %d\n", currentSymTable->getNumber());
+			if(root->children[0]->children[0]->children[0]->symbol == TOK_ARRAY){
+					printf("%s _ %d,%d,%d _ %s%s\n", root->children[0]->children[0]->children[1]->lexinfo->c_str(), 
+						root->filenr, root->linenr, root->offset, 
+						root->children[0]->children[0]->lexinfo->c_str(),root->children[0]->children[0]->children[0]->lexinfo->c_str());
+					
+					string tempStr = root->children[0]->children[0]->lexinfo->c_str();
+					tempStr.append(root->children[0]->children[0]->children[0]->lexinfo->c_str());
+					
+					currentSymTable->addSymbol(root->children[0]->children[0]->children[1]->lexinfo->c_str(), tempStr);
+			}else{
+				printf("%s _ %d,%d,%d _ %s\n", root->children[0]->children[0]->children[0]->lexinfo->c_str(),
+					root->filenr, root->linenr, root->offset,
+					root->children[0]->children[0]->lexinfo->c_str());
+				
+				currentSymTable->addSymbol(root->children[0]->children[0]->children[0]->lexinfo->c_str(),
+						root->children[0]->children[0]->lexinfo->c_str());
+			}
+			break;
+		}
+		case 3:{//normal declaration
+		
+			printf("current block number %d\n", currentSymTable->getNumber());
+			if(root->children[0]->children[0]->symbol == TOK_ARRAY){
+				printf("%s _ %d,%d,%d _ %s%s\n", root->children[0]->children[1]->lexinfo->c_str(),
+					root->filenr, root->linenr, root->offset, root->children[0]->lexinfo->c_str(),
+					root->children[0]->children[0]->lexinfo->c_str());
+
+				string tempStr = root->children[0]->lexinfo->c_str();
+				tempStr.append(root->children[0]->children[0]->lexinfo->c_str());
+
+				currentSymTable->addSymbol(root->children[0]->children[1]->lexinfo->c_str(), tempStr);
+			}else{
+				printf("%s _ %d,%d,%d _ %s\n", root->children[0]->children[0]->lexinfo->c_str(),
+					root->filenr, root->linenr, root->offset,
+					root->children[0]->lexinfo->c_str());
+
+				currentSymTable->addSymbol(root->children[0]->children[0]->lexinfo->c_str(),
+						root->children[0]->lexinfo->c_str());
+			}
+			break;
+		}
+		case 4:{//function declaration
+		
+			printf("current block number %d\n", currentSymTable->getNumber());
+			if(root->children[0]->children[0]->symbol == TOK_ARRAY){
+				printf("%s _ %d,%d,%d _ %s(%s)\n\t", root->children[0]->children[1]->lexinfo->c_str(),
+					root->filenr, root->linenr,
+					root->offset, root->children[0]->lexinfo->c_str(),
+					root->children[0]->children[0]->lexinfo->c_str());
+					
+				string tempStr = root->children[0]->lexinfo->c_str();
+				tempStr.append(root->children[0]->children[0]->lexinfo->c_str());
+
+				currentSymTable = currentSymTable->enterFunction(root->children[0]->children[1]->lexinfo->c_str(), "(" + tempStr + ")" );
+			}else{
+				printf("%s(%s) _ %d,%d,%d _ %s\n\t", root->children[0]->children[0]->lexinfo->c_str(),
+					root->children[0]->lexinfo->c_str(), root->filenr, root->linenr,
+					root->offset, root->children[0]->children[1]->lexinfo->c_str());
+
+				string tempStr = root->children[0]->children[0]->lexinfo->c_str();
+				currentSymTable = currentSymTable->enterFunction(root->children[0]->children[1]->lexinfo->c_str(), "(" + tempStr + ")" );
+			}
+			
+				for (size_t child = 0; child < root->children.size(); ++child) {
+					astree_to_sym_rec (root->children[child]);
+				}
+				
+			currentSymTable = currentSymTable->getParent();
+			break;
+		}
+		case 5:{//block
+			printf("****entering block\n");
+			currentSymTable = currentSymTable->enterBlock();
+			
+				for (size_t child = 0; child < root->children.size(); ++child) {
+					astree_to_sym_rec (root->children[child]);
+				}
+				
+			currentSymTable = currentSymTable->getParent();
+			break;
+		}
+		case 6:{//while loop
+			printf("****entering while loop\n");
+			currentSymTable = currentSymTable->enterBlock();
+			
+				for (size_t child = 0; child < root->children.size(); ++child) {
+					astree_to_sym_rec (root->children[child]);
+				}
+				
+			currentSymTable = currentSymTable->getParent();
+			break;
+		}
+		case 7:{//if block
+			printf("****entering if block\n");
+			currentSymTable = currentSymTable->enterBlock();
+			
+				for (size_t child = 0; child < root->children.size(); ++child) {
+					astree_to_sym_rec (root->children[child]);
+				}
+				
+			currentSymTable = currentSymTable->getParent();
+			break;
+		}
+		case 8:{//else block
+			printf("****entering else block\n");
+			currentSymTable = currentSymTable->enterBlock();
+			
+				for (size_t child = 0; child < root->children.size(); ++child) {
+					astree_to_sym_rec (root->children[child]);
+				}
+				
+			currentSymTable = currentSymTable->getParent();
+			break;
+		}
+		case 0:{//no matching condition. Do nothing. 
+			break;
+		}
+	}
+
+	for (size_t child = 0; child < root->children.size(); ++child) {
+		astree_to_sym_rec (root->children[child]);
 	}
 }
 
 void astree_to_sym (SymbolTable *symTable, astree* root) {
-   astree_to_sym_rec(symTable, root, 0);
+   currentSymTable = symTable;
+   astree_to_sym_rec(root);
    fflush (NULL);
 }
 

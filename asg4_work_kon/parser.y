@@ -86,8 +86,8 @@ basetype:   TOK_VOID                                             { $$ = $1; }
           | TOK_IDENT                                            { $$ = $1; }
           ;
 
-function:   type TOK_IDENT '(' decl_list1 ')' block              { $$ = adopt2 (adopt1($1, $2), $4, $6); free_ast2($3, $5); }
-          | type TOK_IDENT '(' ')' block                         { $$ = adopt1 (adopt1($1, $2), $5); free_ast2($3, $4); }
+function:   type TOK_IDENT '(' decl_list1 ')' block              { $$ = adopt1 (new_astree("function"), adopt2 (adopt1($1, $2), $4, $6)); free_ast2($3, $5); }
+          | type TOK_IDENT '(' ')' block                         { $$ = adopt1 (new_astree("function"), adopt1 (adopt1($1, $2), $5)); free_ast2($3, $4); }
           ;
           
 block:      '{' stmnt_list '}'                                   { $$ = adopt1 (new_astree("block"), $2); free_ast2 ($1, $3); }

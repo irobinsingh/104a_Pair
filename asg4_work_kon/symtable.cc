@@ -11,6 +11,16 @@ SymbolTable::SymbolTable(SymbolTable* parent) {
   this->number = SymbolTable::N++;
 }
 
+// returns pointer to parent symbol table
+SymbolTable* SymbolTable::getParent() {
+  return this->parent = parent;
+}
+
+// returns current table's number
+int SymbolTable::getNumber(){
+	return this->number;
+}
+
 // Creates a new empty table beneath the current table and returns it.
 SymbolTable* SymbolTable::enterBlock() {
   // Create a new symbol table beneath the current one

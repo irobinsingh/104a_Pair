@@ -151,15 +151,6 @@ int main (int argc, char **argv) {
 				}
 				
 				astree_to_sym(symTable, yyparse_astree);
-				//astree_to_sym(stdout, yyparse_astree);
-				
-				/*
-				symTable = symTable->enterBlock();
-				symTable->addSymbol("test1", "test");
-				symTable->addSymbol("test2", "test");
-				symTable = symTable->enterBlock();
-				symTable->addSymbol("test3", "test");
-				*/
 				
 				try {
 					
