@@ -1,4 +1,4 @@
-// Assignment 3 CS 104a 
+// Assignment 4 CS 104a 
 // Modified By: Konstantin Litovskiy and Gahl Levy
 // Users Names: klitovsk and grlevy
 
@@ -83,157 +83,337 @@ static void dump_astree_rec (FILE* outfile, astree* root, int depth) {
    }
 }
 
-
 void dump_astree (FILE* outfile, astree* root) {
    dump_astree_rec (outfile, root, 0);
    fflush (NULL);
 }
 
-
-
-
-static void binop_rec(SymbolTable* symTable, astree* root, int type) {
-    
-	if (root == NULL) return;
-    
-	if (type == -1) {
-        type = root->symbol;
+string typeCheck (astree* root, int counter) {
+	if (root == NULL) return "";
+	
+	string returnString = "";
+	
+	if(root->children.size() == 0){
+		switch(root->symbol){
+			case TOK_INT:
+			case TOK_CHAR:
+			case TOK_STRING:
+			case TOK_BOOL:
+			case TOK_NULL:
+			case TOK_VOID:{
+				returnString = root->lexinfo->c_str();
+				break;
+			}
+			case TOK_INTCON:{
+				returnString = "int";
+				break;
+			}
+			case TOK_CHARCON:{
+				returnString = "char";
+				break;
+			}
+			case TOK_STRINGCON:{
+				returnString = "string";
+				break;
+			}
+			case TOK_IDENT:{
+				returnString = getIdentType(root->lexinfo->c_str(), counter);
+				if(returnString == ""){
+					errprintf ("***(%d,%d,%d) -- Unknown Ident: %s\n", root->filenr, root->linenr,root->offset, root->lexinfo->c_str());
+				}
+				break;
+			}
+			default:{
+				returnString = "";
+				break;
+			}
+		}
+	}else{
+	
+		string type1 = "";
+		string type2 = "";
+	
+		switch(lexInfoToSwitch(root->lexinfo->c_str())){
+			case 1:{//struct definition
+			break;
+			}
+			case 2:{//variable declaration
+			break;
+			}
+			case 3:{//normal declaration
+			break;
+			}
+			case 4:{//function declaration
+				counter++;
+				break;
+			}
+			case 5:{//block
+				counter++;
+				break;
+			}
+			case 6:{//while loop
+				counter++;
+				break;
+			}
+			case 7:{//if block
+				counter++;
+				break;
+			}
+			case 8:{//else block
+				counter++;
+				break;
+			}	
+			case 10:{//binop typecheck
+				type1 = typeCheck(root->children[0]->children[0], counter);
+				type2 = typeCheck(root->children[0]->children[1], counter);
+						
+				switch(root->children[0]->symbol){
+					case '=': 
+					case TOK_EQ: 
+					case TOK_NE:{
+						if(strcmp(type1.c_str(), type2.c_str()) == 0){
+							return type1;
+						}else{
+							errprintf ("***(%d,%d,%d) -- Miss-Matched Types: %s <-> %s\n", 
+								root->children[0]->filenr, root->children[0]->linenr,root->children[0]->offset, type1.c_str(), type2.c_str());
+						}
+						break;
+					}
+					case '<': 
+					case TOK_LE:
+					case '>': 
+					case TOK_GE:{
+						if(strcmp(type1.c_str(), type2.c_str()) == 0 && isPrimative(type1)){
+							return type1;
+						}else{
+							errprintf ("***(%d,%d,%d) -- Miss-Matched Types: %s <-> %s | Can Only Be INT, CHAR, or BOOL\n", 
+								root->children[0]->filenr, root->children[0]->linenr,root->children[0]->offset, type1.c_str(), type2.c_str());
+						}
+						break;
+					}
+					case '+': 
+					case '-': 
+					case '*': 
+					case '/': 
+					case '%':{
+						if(strcmp(type1.c_str(), type2.c_str()) == 0 && isInt(type1)){
+							return type1;
+						}else{
+							errprintf ("***(%d,%d,%d) -- Miss-Matched Types: %s <-> %s | Can Only Be INT\n", 
+								root->children[0]->filenr, root->children[0]->linenr,root->children[0]->offset, type1.c_str(), type2.c_str());
+						}					
+					break;
+					}	
+				break;
+				}
+			}
+			case 11:{//unop typecheck
+				type1 = typeCheck(root->children[0]->children[0], counter);
+				
+				switch(root->children[0]->symbol){
+					case '+': 
+					case '-':
+						if(isInt(type1)){
+							returnString =  type1;
+						}else{
+							errprintf ("***(%d,%d,%d) -- Miss-Matched Type: %s. MUST BE INT\n", 
+								root->children[0]->filenr, root->children[0]->linenr,root->children[0]->offset, type1.c_str());
+						}	
+						break;
+					}
+					case '!':{
+						if(isBool(type1)){
+							returnString =  type1;
+						}else{
+							errprintf ("***(%d,%d,%d) -- Miss-Matched Type: %s. MUST BE BOOL\n", 
+								root->children[0]->filenr, root->children[0]->linenr,root->children[0]->offset, type1.c_str());
+						}
+						break;
+					}
+					case TOK_ORD: {
+						if(isChar(type1)){
+							returnString =  "int";
+						}else{
+							errprintf ("***(%d,%d,%d) -- Miss-Matched Type: %s. MUST BE CHAR\n", 
+								root->children[0]->filenr, root->children[0]->linenr,root->children[0]->offset, type1.c_str());
+						}
+						break;
+					}
+					case TOK_CHAR:{
+						if(isInt(type1)){
+							returnString =  "char";
+						}else{
+							errprintf ("***(%d,%d,%d) -- Miss-Matched Type: %s. MUST BE INT\n", 
+								root->children[0]->filenr, root->children[0]->linenr,root->children[0]->offset, type1.c_str());
+						}
+						break;
+					}
+				break;	
+			}
+			case 12:{//variable typecheck
+				
+				if(root->children[0]->symbol != TOK_IDENT){
+					if(root->children.size() == 2){
+						type1 = typeCheck(root->children[0], counter);
+						type2 = typeCheck(root->children[1], counter);
+						
+						if (isStruct(type1) && isStructIdent(type1,type2)){
+							returnString = type2;
+						}else{
+							if(isString(type1) && isInt(type2)){
+								returnString = "char";
+							}else{
+								if(isBaseTypeArr(type1) && isInt(type2)){
+									returnString = type1.substr(0, type1.length()-2);
+								}else{
+									errprintf ("***(%d,%d,%d) -- Variable Miss Matched Type\n", root->filenr, root->linenr,root->offset);
+									
+								}
+							}
+						}
+					}else{
+						returnString = typeCheck(root->children[0], counter);;
+					}
+				}else{
+					returnString = typeCheck(root->children[0], counter);
+				}
+				
+				break;
+			}
+			case 13:{
+				
+				if(root->children.size() == 2){
+					type1 = typeCheck(root->children[0], counter);
+					type2 = typeCheck(root->children[1], counter);
+					if(isBaseType(type1) && isInt(type2)){
+						returnString = type1.append("[]");
+					}else{
+						errprintf ("***(%d,%d,%d) -- Allocator Miss Matched Type\n", root->filenr, root->linenr,root->offset);
+					}
+				}else{
+					if(root->children.size() == 1){
+						type1 = typeCheck(root->children[0], counter);
+						if(isBaseType(type1)){
+							returnString = type1;
+						}else{
+							errprintf ("***(%d,%d,%d) -- Allocator Miss Matched Type\n", root->filenr, root->linenr,root->offset);
+						}
+					}else{
+						errprintf ("***(%d,%d,%d) -- NEW Allocator Argument Amount Miss Matched Type\n", root->filenr, root->linenr,root->offset);
+					}
+				}
+						
+				break;
+			}
+			case 0:{//no matching condition. Do nothing. 
+				break;
+			}
+		}
+		for (size_t child = 0; child < root->children.size(); ++child) {
+			returnString = typeCheck (root->children[child], counter);
+		}
 	}
-    
-    int s1 =  root->symbol;
-    
-    
-    switch (s1) {
-            
-        case TOK_INTCON: {
-            s1 = TOK_INT;
-            
-        }
-            
-        case TOK_CHARCON: {
-            s1 = TOK_CHAR;
-            
-        }
-            
-        default: {
-            
-            if (s1 != TOK_IDENT && s1 > 0 ) {
-                s1 = root->symbol;
-            }
-            
-        }
-            
-    }
-    
-    
-    
-    if (type != s1) {
-        
-        printf( "\nERROR: THE TYPES DONT MATCH:" );
-        
-        return;
-        
-    }
-    
-    
-    for (size_t child = 0; child < root->children.size(); ++child) {
-        binop_rec (symTable, root, type);
-    }
-    
+	return returnString;
 }
 
-void typeCheck (SymbolTable* symTable, astree* root) {
-    printf("HELLO:");
-    
-    if (root == NULL) return;
-    
-    switch (root->symbol)   {
-        	
-        case 'binop': {
-            
-            binop_rec(symTable, root, -1);
-            
-    	}
-    }
-    
-    
-    for (size_t child = 0; child < root->children.size(); ++child) {
-        typeCheck (symTable, root->children[child]);
-    }
-    
+string getTypeRec (astree* node){
+	return "";
 }
 
-
-
-
-
-
-
-
-
-/*
-
-static string nodeType(astree* node, SymbolTable* symTable) {
-    
-    if (node->symbol == TOK_IDENT) {
-         return symTable->lookup(node->lexinfo->c_str());
-        
-    }
-    else {
-        
-        return node->lexinfo->c_str();
-    }
-    
+bool isBaseType (string type){
+	return isPrimative(type) || isString(type) || isStruct(type);
 }
 
-static void typeCheck (SymbolTable* symTable, astree* node) {
-    switch (node->symbol)
-    {
-        case '=':
-            if (node->children.size() != 2) {
-                break;
-            }
-            if (strcmp(node->children[1]->lexinfo->c_str() , "binop") == 0) {
-                printf(node->children[1]->lexinfo->c_str());
-                
-                if (strcmp( nodeType(node->children[1]->children[1]->children[0], symTable).c_str() , nodeType(node->children[1]->children[2]->children[0], symTable).c_str()  ) != 0) {
-                    printf( "\nERROR: THE TYPES DONT MATCH: %s  %s\n", nodeType(node->children[1]->children[1]->children[0], symTable).c_str() , nodeType(node->children[1]->children[2]->children[0], symTable).c_str() );
-                }
-                
-                break;
-                
-            }
-            
-            string s1 =  get_yytname (node->children[0]->symbol);
-            string s2 =  get_yytname (node->children[1]->symbol);
-          
-            
-            if (s2.find(s1) == std::string::npos) {
-                printf( "\nERROR: THE TYPES DONT MATCH: %s  %s\n",node->children[0]->lexinfo->c_str() , node->children[1]->lexinfo->c_str() );
-            }
-            break;
-            
-        //default:
-           // printf("\n");
-    }
+bool isBaseTypeArr (string type){
+	string temp = type;
+	if(type != "" && type.length() >2){
+		temp = temp.substr(0,type.length()-2); 
+		return isPrimative(temp) || isString(temp) || isStruct(temp);
+	}else{
+		return "";
+	}
+}
 
+bool isPrimative (string type){
+	return isInt(type) || isChar(type) || isBool(type); 
+}
+
+bool isInt (string type){
+	string int_s = "int";
+	return (strcmp(type.c_str(), int_s.c_str()) == 0);
+}
+
+bool isBool (string type){
+	string bool_s = "bool";
+	return (strcmp(type.c_str(), bool_s.c_str()) == 0);
+}
+
+bool isChar (string type){
+	string char_s = "char";
+	return (strcmp(type.c_str(), char_s.c_str()) == 0) ;
+}
+
+bool isString (string type){
+	string string_s = "string";
+	return (strcmp(type.c_str(), string_s.c_str()) == 0) ;
+}
+
+bool isNULL (string type){
+	string null_s = "null";
+	return (strcmp(type.c_str(), null_s.c_str()) == 0) ;
+}
+
+bool isStruct (string name ){
+	bool structFound = false;
+	for(size_t tables = 0; tables < struct_defs.size(); ++tables){
+		if(strcmp(struct_defs[tables]->lookup("struct").c_str(), name.c_str()) == 0){
+			structFound = true;
+			tables = struct_defs.size();
+		}
+	}
+	return structFound;
+}
+
+bool isStructIdent(string type1,string type2){
+	bool identFound = false;
+	bool structFound = false;
+	size_t tables = 0;
+	while(tables < struct_defs.size() && !identFound){
+		if(strcmp(struct_defs[tables]->lookup("struct").c_str(), type1.c_str()) == 0){
+			if(struct_defs[tables]->lookup(type2) != ""){
+				identFound = true;
+			}			
+		}
+		++tables;
+	}
+	return identFound;
 }
 
 
-static void typeCheck_astree_rec (astree* root, int depth) {
-    if (root == NULL) return;
-    typeCheck_node (root);
-    for (size_t child = 0; child < root->children.size(); ++child) {
-        typeCheck_astree_rec (root->children[child], depth + 1);
-    }
+string getIdentType(string name, int counter){
+	if(symbol_tables_tracker[counter] != NULL){
+		string tableLookUp = symbol_tables_tracker[counter]->lookup(name);
+		if (tableLookUp != ""){
+			return tableLookUp;
+		}else{
+			return getIdentInStruct(name);
+		}
+	}else{
+		return "";
+	}
 }
 
-
-void typeCheck_astree (astree* root) {
-    typeCheck_astree_rec (root, 0);
-    fflush (NULL);
+string getIdentInStruct(string name){
+	string identType = "";
+	for(size_t tables = 0; tables < struct_defs.size(); ++tables){
+		if(struct_defs[tables]->lookup(name).c_str()!= ""){
+			identType = struct_defs[tables]->lookup(name);
+			tables = struct_defs.size();
+		}
+	}
+	
+	return identType;
 }
- */
 
 void yyprint (FILE* outfile, unsigned short toknum, astree* yyvaluep) {
    DEBUGF ('f', "toknum = %d, yyvaluep = %p\n", toknum, yyvaluep);
@@ -263,7 +443,7 @@ void free_ast2 (astree* tree1, astree* tree2) {
    free_ast (tree2);
 }
 
-static int lexInfoToSwitch(const char* lexinfo){
+int lexInfoToSwitch(const char* lexinfo){
 	string struct_s = "structdef"; 		// 1
 	
 	string vardecl = "vardecl"; 		// 2
@@ -275,6 +455,12 @@ static int lexInfoToSwitch(const char* lexinfo){
 	string while_s = "while";			// 6
 	string if_s = "if";					// 7
 	string else_s = "else";				// 8
+	
+	string binop = "binop"; 			// 10
+	string unop  = "unop";				// 11
+	string variable = "variable";		// 12
+	string new_s = "new";				// 13
+	
 	
 	int lexReturn = 0;
 	
@@ -301,6 +487,18 @@ static int lexInfoToSwitch(const char* lexinfo){
 	}
 	if(strcmp(lexinfo, else_s.c_str()) == 0){
 		lexReturn = 8;
+	}
+	if(strcmp(lexinfo, binop.c_str()) == 0){
+		lexReturn = 10;
+	}
+	if(strcmp(lexinfo, unop.c_str()) == 0){
+		lexReturn = 11;
+	}
+	if(strcmp(lexinfo, variable.c_str()) == 0){
+		lexReturn = 12;
+	}
+	if(strcmp(lexinfo, new_s.c_str()) == 0){
+		lexReturn = 13;
 	}
 		
 	return lexReturn;
@@ -501,7 +699,6 @@ static void astree_to_sym_rec (astree* root) {
 									root->children[0]->filenr,
 									root->children[0]->linenr,
 									root->children[0]->offset);
-			newStruct = newStruct->enterBlock();
 			astree_to_sym_rec(newStruct, root->children[1]);
 			return;
 			break;
@@ -607,6 +804,7 @@ static void astree_to_sym_rec (astree* root) {
 																	root->children[0]->children[1]->filenr,
 																	root->children[0]->children[1]->linenr,
 																	root->children[0]->children[1]->offset);
+				symbol_tables_tracker.push_back(currentSymTable);
 			}else{
 				//printf("%s _ %d,%d,%d _ %s()\n\t", root->children[0]->children[0]->lexinfo->c_str(),
 				//	root->filenr, root->linenr, root->offset, 
@@ -641,6 +839,7 @@ static void astree_to_sym_rec (astree* root) {
 																	root->children[0]->children[0]->filenr,
 																	root->children[0]->children[0]->linenr,
 																	root->children[0]->children[0]->offset);
+				symbol_tables_tracker.push_back(currentSymTable);
 			}
 			
 			if(dec > 0){
@@ -653,7 +852,7 @@ static void astree_to_sym_rec (astree* root) {
 					astree_to_sym_rec (root->children[0]->children[block]->children[child]);
 				}
 			}
-				
+			
 			currentSymTable = currentSymTable->getParent();
 			
 			//global_sym_table->dump(stdout, 0);
@@ -663,17 +862,19 @@ static void astree_to_sym_rec (astree* root) {
 		case 5:{//block
 			//printf("****entering block\n");
 			currentSymTable = currentSymTable->enterBlock();
+			symbol_tables_tracker.push_back(currentSymTable);
 			
 				for (size_t child = 0; child < root->children.size(); ++child) {
 					astree_to_sym_rec (root->children[child]);
 				}
-				
+			
 			currentSymTable = currentSymTable->getParent();
 			break;
 		}
 		case 6:{//while loop
 			//printf("****entering while loop\n");
 			currentSymTable = currentSymTable->enterBlock();
+			symbol_tables_tracker.push_back(currentSymTable);
 			
 				for (size_t child = 0; child < root->children.size(); ++child) {
 					astree_to_sym_rec (root->children[child]);
@@ -685,6 +886,7 @@ static void astree_to_sym_rec (astree* root) {
 		case 7:{//if block
 			//printf("****entering if block\n");
 			currentSymTable = currentSymTable->enterBlock();
+			symbol_tables_tracker.push_back(currentSymTable);
 			
 				for (size_t child = 0; child < root->children.size(); ++child) {
 					astree_to_sym_rec (root->children[child]);
@@ -696,6 +898,7 @@ static void astree_to_sym_rec (astree* root) {
 		case 8:{//else block
 			//printf("****entering else block\n");
 			currentSymTable = currentSymTable->enterBlock();
+			symbol_tables_tracker.push_back(currentSymTable);
 			
 				for (size_t child = 0; child < root->children.size(); ++child) {
 					astree_to_sym_rec (root->children[child]);

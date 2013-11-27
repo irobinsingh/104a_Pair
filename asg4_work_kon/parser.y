@@ -1,7 +1,7 @@
 %{
 // $Id: parser.y,v 1.5 2013-10-10 18:48:18-07 - - $
 
-// Assignment 3 CS 104a
+// Assignment 4 CS 104a
 // Authors: Konstantin Litovskiy and Gahl Levy
 // Users Names: klitovsk and grlevy
     
@@ -149,16 +149,16 @@ binop:      expr '=' expr                                        { $$ = adopt1 (
           | expr '%' expr                                        { $$ = adopt1 (new_astree("binop"),adopt2 ($2, $1, $3)); }
           ;
 
-unop:       '+' expr %prec TOK_POS                               { $$ = adopt1sym ($1, $2, TOK_POS); }
-          | '-' expr %prec TOK_NEG                               { $$ = adopt1sym ($1, $2, TOK_NEG); }
-          | '!' expr                                             { $$ = adopt1sym ($1, $2, TOK_NEG); }
-          | TOK_ORD expr                                         { $$ = adopt1sym ($1, $2, TOK_ORD); }
-          | TOK_CHR expr                                         { $$ = adopt1sym ($1, $2, TOK_CHR); }
+unop:       '+' expr %prec TOK_POS                               { $$ = adopt1(new_astree("unop"), adopt1sym ($1, $2, TOK_POS)); }
+          | '-' expr %prec TOK_NEG                               { $$ = adopt1(new_astree("unop"), adopt1sym ($1, $2, TOK_NEG)); }
+          | '!' expr                                             { $$ = adopt1(new_astree("unop"), adopt1sym ($1, $2, TOK_NEG)); }
+          | TOK_ORD expr                                         { $$ = adopt1(new_astree("unop"), adopt1sym ($1, $2, TOK_ORD)); }
+          | TOK_CHR expr                                         { $$ = adopt1(new_astree("unop"), adopt1sym ($1, $2, TOK_CHR)); }
           ;
             
-allocator:  TOK_NEW basetype '(' expr ')'                        { $$ = adopt2 (new_astree("new"), $2, $4); free_ast ($1); free_ast2 ($3, $5); }
-          | TOK_NEW basetype '(' ')'                             { $$ = adopt1 (new_astree("new"), $2); free_ast ($1);  free_ast2 ($3, $4); }
-          | TOK_NEW basetype '[' expr ']'                        { $$ = adopt2 (new_astree("new"), $2, $4); free_ast ($1);  free_ast2 ($3, $5); }
+allocator:  TOK_NEW basetype '(' expr ')'                        { $$ = adopt2 (new_astree("new", $1), $2, $4); free_ast2 ($3, $5); }
+          | TOK_NEW basetype '(' ')'                             { $$ = adopt1 (new_astree("new", $1), $2); free_ast2 ($3, $4); }
+          | TOK_NEW basetype '[' expr ']'                        { $$ = adopt2 (new_astree("new", $1), $2, $4); free_ast2 ($3, $5); }
           ;
 
 call:       TOK_IDENT '(' expr_list ')'                          { $$ = adopt1 (new_astree("call"),adopt1 ($1, $3)); free_ast2 ($2, $4);}
@@ -166,8 +166,8 @@ call:       TOK_IDENT '(' expr_list ')'                          { $$ = adopt1 (
           ;
           
 variable:   TOK_IDENT                                            { $$ = adopt1 (new_astree("variable"), $1); }
-          | expr '[' expr ']'                                    { $$ = adopt1 (new_astree("variable"), adopt1 ($1, $3)); free_ast2 ($2, $4); }
-          | expr '.' TOK_IDENT                                   { $$ = adopt1 (new_astree("variable"), adopt1 ($1, $3)); free_ast ($2); }
+          | expr '[' expr ']'                                    { $$ = adopt1 (new_astree("variable",$2), adopt1 ($1, $3)); free_ast($4); }
+          | expr '.' TOK_IDENT                                   { $$ = adopt1 (new_astree("variable",$2), adopt1 ($1, $3)); }
           ;
           
 constant:   TOK_INTCON                                           { $$ = $1; }

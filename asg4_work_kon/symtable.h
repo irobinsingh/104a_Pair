@@ -1,3 +1,7 @@
+// Assignment 4 CS 104a
+// Modified By: Konstantin Litovskiy and Gahl Levy
+// Users Names: klitovsk and grlevy
+
 #ifndef __SYMTABLE_H__
 #define __SYMTABLE_H__
 
@@ -55,6 +59,12 @@ public:
   //          use "currentSymbolTable->enterFunction("add", "void(int,int)");
   SymbolTable* enterFunction(string name, string signature, int file, int line, int offset);
 
+  /*
+  // Traverses the Symbol Table until block number "destNumber" is reached. NULL is returned otherwise. 
+  SymbolTable* getSymbolTableAt(int destNumber);
+  SymbolTable* getSymbolTableAtRec(int counter, int destNumber);
+  */
+  
   // Add a symbol with the provided name and type to the current table.
   //
   // Example: To add the variable declaration "int i = 23;"

@@ -1,3 +1,7 @@
+// Assignment 4 CS 104a
+// Modified By: Konstantin Litovskiy and Gahl Levy
+// Users Names: klitovsk and grlevy
+
 #include "auxlib.h"
 #include "symtable.h"
 
@@ -103,6 +107,40 @@ void SymbolTable::dump(FILE* symfile, int depth) {
   }
 }
 
+/*
+// Traverses the Symbol Table until block number "destNumber" is reached. NULL is returned otherwise. 
+SymbolTable* SymbolTable::getSymbolTableAt(int destNumber){
+	SymbolTable* tablePtr = this;
+	// Create a new iterator for <string,SymbolTable*>
+	
+	return getSymbolTableAtRec(0,destNumber);
+}
+
+SymbolTable* SymbolTable::getSymbolTableAtRec(int counter, int destNumber){
+	if(this->number == destNumber){
+		return this;
+	}else{
+	  std::map<string,SymData*>::iterator it;
+		
+	  SymbolTable* returnST = NULL;
+	  for (it = this->mapping.begin(); it != this->mapping.end(); ++it) {
+		const char* name = it->first.c_str();
+		if (this->subscopes.count(name) > 0) {
+		  returnST = this->subscopes[name]->getSymbolTableAtRec(counter + 1, destNumber);
+		}
+	  }
+	  
+	  std::map<string,SymbolTable*>::iterator i;
+	  for (i = this->subscopes.begin(); i != this->subscopes.end(); ++i){
+		if (this->mapping.count(i->first) < 1){
+			returnST = i->second->getSymbolTableAtRec(counter + 1, destNumber);
+		}
+	  }
+	  return returnST;
+	}
+}
+*/
+
 // Look up name in this and all surrounding blocks and return its type.
 //
 // Returns the empty string "" if variable was not found
@@ -119,7 +157,7 @@ string SymbolTable::lookup(string name) {
     return this->parent->lookup(name);
   } else {
     // Return "" if the global symbol table has no entry
-    errprintf("Unknown identifier: %s\n", name.c_str());
+	// errprintf("Unknown identifier: %s\n", name.c_str());
     return "";
   }
 }
@@ -147,7 +185,7 @@ string SymbolTable::parentFunction(SymbolTable* innerScope) {
     return this->parent->parentFunction(this);
   }
   // If there is no parent scope, return ""
-  errprintf("Could not find surrounding function\n");
+  //errprintf("Could not find surrounding function\n");
   return "";
 }
 

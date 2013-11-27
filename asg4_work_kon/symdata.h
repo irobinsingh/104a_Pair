@@ -1,3 +1,7 @@
+// Assignment 4 CS 104a 
+// Authors: Konstantin Litovskiy and Gahl Levy
+// Users Names: klitovsk and grlevy
+
 #ifndef __SYMDATA_H__
 #define __SYMDATA_H__
 

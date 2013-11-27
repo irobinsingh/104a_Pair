@@ -1,4 +1,4 @@
-// Assignment 3 CS 104a 
+// Assignment 4 CS 104a 
 // Modified By: Konstantin Litovskiy and Gahl Levy
 // Users Names: klitovsk and grlevy
 
@@ -13,6 +13,7 @@ using namespace std;
 #include "symtable.h"
 
 extern vector<SymbolTable*> struct_defs; 
+extern vector<SymbolTable*> symbol_tables_tracker;
 extern SymbolTable *global_sym_table;
 
 struct astree {
@@ -38,8 +39,22 @@ void free_ast2 (astree* tree1, astree* tree2);
 void astree_to_sym (astree* root);
 void type_check (SymbolTable *symTable, astree* node);
 void dump_structs (FILE* output);
-void typeCheck (SymbolTable* symTable, astree* root);
+int lexInfoToSwitch(const char* lexinfo);
 
+//string getTypeRec (astree* node);
+
+string typeCheck (astree* root, int counter);
+bool isBaseType (string type);
+bool isBaseTypeArr (string type);
+bool isPrimative (string type);
+bool isInt (string type);
+bool isBool (string type);
+bool isChar (string type);
+bool isString (string type);
+bool isStruct (string name);
+bool isStructIdent(string type1,string type2);
+string getIdentType(string name, int counter);
+string getIdentInStruct(string name);
 void typeCheck_astree (astree* root);
 
 

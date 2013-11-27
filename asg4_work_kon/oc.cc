@@ -1,6 +1,6 @@
 // $Id: cppstrtok.cc,v 1.2 2013-09-20 19:38:26-07 - - $
 
-// Assignment 3 CS 104a 
+// Assignment 4 CS 104a 
 // Authors: Konstantin Litovskiy and Gahl Levy
 // Users Names: klitovsk and grlevy
 
@@ -26,6 +26,7 @@ const string CPP = "/usr/bin/cpp";
 const size_t LINESIZE = 1024;
 extern SymbolTable *global_sym_table;
 vector<SymbolTable*> struct_defs; 
+vector<SymbolTable*> symbol_tables_tracker;
 FILE* tok_file_out = NULL;
 extern int yy_flex_debug;
 extern int yydebug;
@@ -101,7 +102,7 @@ int main (int argc, char **argv) {
             yyin = popen (command.c_str(), "r"); // opens the pipe
             
 			if (yyin == NULL) {
-				syserrprintf (command.c_str());
+				errprintf (command.c_str());
 			
 			}else {
 
@@ -148,6 +149,7 @@ int main (int argc, char **argv) {
 					syserrprintf (errout2.c_str());
 				}
 				
+				//Kicks off symbolic table creation
 				astree_to_sym(yyparse_astree);
 				
 				try {
@@ -156,12 +158,16 @@ int main (int argc, char **argv) {
 
 					// prints the sym table to a file
 					global_sym_table->dump (outputFileSYM,0);
-					//global_sym_table->dump (stdout,0);
                     
-                    typeCheck (global_sym_table, yyparse_astree);
+                    typeCheck (yyparse_astree, 0);
                     
+					//Uncomment this to print out all Struct Defs:
+					//Replace STDOUT with any valid FILE* variable. 
+					//
+					//dump_structs(stdout);
+					
 					fclose (outputFileSYM); // close the str file
-					dump_structs(stdout);
+					
 				} catch (...) { // if there is an error with the file
 					string errout2 = "File Error: Failed to write to " + outputFileNameSYM + ".";
 					syserrprintf (errout2.c_str());
@@ -169,7 +175,7 @@ int main (int argc, char **argv) {
 			}
 		}
 		else{
-			syserrprintf ("Invalid Arguments");
+			errprintf ("Invalid Arguments");
 		}
     return get_exitstatus();
 }
