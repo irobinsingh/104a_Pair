@@ -1,0 +1,450 @@
+________________________________________________________________________
+Script  : /afs/cats.ucsc.edu/courses/cmps012b-wm/bin/runprogram.perl
+limit c :    0 max core file size (KB)
+limit f : 4194303 max output file size (KB)
+limit t : 4294967295 max CPU time (sec)
+stdin   : /dev/null
+stdout  : 00-trivial.oc.test.out
+stderr  : 00-trivial.oc.test.err
+log     : 00-trivial.oc.test.log
+base    : 00-trivial.oc.test
+Command : oc 00-trivial.oc
+starting: pid 27079: 21:48:43.00
+finished: pid 27079: 21:48:43.00, real 0.00, user 0.00, sys 0.00
+pstatus: 0x0000 EXIT STATUS = 0
+________________________________________________________________________
+________________________________________________________________________
+Script  : /afs/cats.ucsc.edu/courses/cmps012b-wm/bin/runprogram.perl
+limit c :    0 max core file size (KB)
+limit f : 4194303 max output file size (KB)
+limit t : 4294967295 max CPU time (sec)
+stdin   : /dev/null
+stdout  : 01-hello.oc.test.out
+stderr  : 01-hello.oc.test.err
+log     : 01-hello.oc.test.log
+base    : 01-hello.oc.test
+Command : oc 01-hello.oc
+starting: pid 27084: 21:48:43.00
+finished: pid 27084: 21:48:43.00, real 0.00, user 0.00, sys 0.00
+pstatus: 0x0000 EXIT STATUS = 0
+________________________________________________________________________
+________________________________________________________________________
+Script  : /afs/cats.ucsc.edu/courses/cmps012b-wm/bin/runprogram.perl
+limit c :    0 max core file size (KB)
+limit f : 4194303 max output file size (KB)
+limit t : 4294967295 max CPU time (sec)
+stdin   : /dev/null
+stdout  : 03-test3.oc.test.out
+stderr  : 03-test3.oc.test.err
+log     : 03-test3.oc.test.log
+base    : 03-test3.oc.test
+Command : oc 03-test3.oc
+starting: pid 27089: 21:48:43.00
+finished: pid 27089: 21:48:43.00, real 0.00, user 0.00, sys 0.00
+pstatus: 0x0000 EXIT STATUS = 0
+________________________________________________________________________
+________________________________________________________________________
+Script  : /afs/cats.ucsc.edu/courses/cmps012b-wm/bin/runprogram.perl
+limit c :    0 max core file size (KB)
+limit f : 4194303 max output file size (KB)
+limit t : 4294967295 max CPU time (sec)
+stdin   : /dev/null
+stdout  : 04-test4.oc.test.out
+stderr  : 04-test4.oc.test.err
+log     : 04-test4.oc.test.log
+base    : 04-test4.oc.test
+Command : oc 04-test4.oc
+starting: pid 27094: 21:48:43.00
+finished: pid 27094: 21:48:43.00, real 0.00, user 0.00, sys 0.00
+pstatus: 0x0000 EXIT STATUS = 0
+________________________________________________________________________
+________________________________________________________________________
+Script  : /afs/cats.ucsc.edu/courses/cmps012b-wm/bin/runprogram.perl
+limit c :    0 max core file size (KB)
+limit f : 4194303 max output file size (KB)
+limit t : 4294967295 max CPU time (sec)
+stdin   : /dev/null
+stdout  : 06-test6.oc.test.out
+stderr  : 06-test6.oc.test.err
+log     : 06-test6.oc.test.log
+base    : 06-test6.oc.test
+Command : oc 06-test6.oc
+starting: pid 27099: 21:48:43.00
+finished: pid 27099: 21:48:43.00, real 0.00, user 0.00, sys 0.00
+pstatus: 0x0000 EXIT STATUS = 0
+________________________________________________________________________
+________________________________________________________________________
+Script  : /afs/cats.ucsc.edu/courses/cmps012b-wm/bin/runprogram.perl
+limit c :    0 max core file size (KB)
+limit f : 4194303 max output file size (KB)
+limit t : 4294967295 max CPU time (sec)
+stdin   : /dev/null
+stdout  : 07-assert.oc.test.out
+stderr  : 07-assert.oc.test.err
+log     : 07-assert.oc.test.log
+base    : 07-assert.oc.test
+Command : oc 07-assert.oc
+starting: pid 27104: 21:48:43.00
+finished: pid 27104: 21:48:43.00, real 0.00, user 0.00, sys 0.00
+pstatus: 0x0000 EXIT STATUS = 0
+________________________________________________________________________
+________________________________________________________________________
+Script  : /afs/cats.ucsc.edu/courses/cmps012b-wm/bin/runprogram.perl
+limit c :    0 max core file size (KB)
+limit f : 4194303 max output file size (KB)
+limit t : 4294967295 max CPU time (sec)
+stdin   : /dev/null
+stdout  : 10-hundred.oc.test.out
+stderr  : 10-hundred.oc.test.err
+log     : 10-hundred.oc.test.log
+base    : 10-hundred.oc.test
+Command : oc 10-hundred.oc
+starting: pid 27109: 21:48:43.00
+finished: pid 27109: 21:48:43.00, real 0.00, user 0.00, sys 0.00
+pstatus: 0x0000 EXIT STATUS = 0
+________________________________________________________________________
+________________________________________________________________________
+Script  : /afs/cats.ucsc.edu/courses/cmps012b-wm/bin/runprogram.perl
+limit c :    0 max core file size (KB)
+limit f : 4194303 max output file size (KB)
+limit t : 4294967295 max CPU time (sec)
+stdin   : /dev/null
+stdout  : 11-numbers.oc.test.out
+stderr  : 11-numbers.oc.test.err
+log     : 11-numbers.oc.test.log
+base    : 11-numbers.oc.test
+Command : oc 11-numbers.oc
+starting: pid 27114: 21:48:43.00
+finished: pid 27114: 21:48:43.00, real 0.00, user 0.00, sys 0.00
+pstatus: 0x0000 EXIT STATUS = 0
+________________________________________________________________________
+________________________________________________________________________
+Script  : /afs/cats.ucsc.edu/courses/cmps012b-wm/bin/runprogram.perl
+limit c :    0 max core file size (KB)
+limit f : 4194303 max output file size (KB)
+limit t : 4294967295 max CPU time (sec)
+stdin   : /dev/null
+stdout  : 12-elseif.oc.test.out
+stderr  : 12-elseif.oc.test.err
+log     : 12-elseif.oc.test.log
+base    : 12-elseif.oc.test
+Command : oc 12-elseif.oc
+starting: pid 27119: 21:48:43.00
+finished: pid 27119: 21:48:43.00, real 0.00, user 0.00, sys 0.00
+pstatus: 0x0000 EXIT STATUS = 0
+________________________________________________________________________
+________________________________________________________________________
+Script  : /afs/cats.ucsc.edu/courses/cmps012b-wm/bin/runprogram.perl
+limit c :    0 max core file size (KB)
+limit f : 4194303 max output file size (KB)
+limit t : 4294967295 max CPU time (sec)
+stdin   : /dev/null
+stdout  : 13-assertfail.oc.test.out
+stderr  : 13-assertfail.oc.test.err
+log     : 13-assertfail.oc.test.log
+base    : 13-assertfail.oc.test
+Command : oc 13-assertfail.oc
+starting: pid 27124: 21:48:43.00
+finished: pid 27124: 21:48:43.00, real 0.00, user 0.00, sys 0.00
+pstatus: 0x0000 EXIT STATUS = 0
+________________________________________________________________________
+________________________________________________________________________
+Script  : /afs/cats.ucsc.edu/courses/cmps012b-wm/bin/runprogram.perl
+limit c :    0 max core file size (KB)
+limit f : 4194303 max output file size (KB)
+limit t : 4294967295 max CPU time (sec)
+stdin   : /dev/null
+stdout  : 14-ocecho.oc.test.out
+stderr  : 14-ocecho.oc.test.err
+log     : 14-ocecho.oc.test.log
+base    : 14-ocecho.oc.test
+Command : oc 14-ocecho.oc
+starting: pid 27129: 21:48:43.00
+finished: pid 27129: 21:48:43.00, real 0.00, user 0.00, sys 0.00
+pstatus: 0x0000 EXIT STATUS = 0
+________________________________________________________________________
+________________________________________________________________________
+Script  : /afs/cats.ucsc.edu/courses/cmps012b-wm/bin/runprogram.perl
+limit c :    0 max core file size (KB)
+limit f : 4194303 max output file size (KB)
+limit t : 4294967295 max CPU time (sec)
+stdin   : /dev/null
+stdout  : 20-fib-array.oc.test.out
+stderr  : 20-fib-array.oc.test.err
+log     : 20-fib-array.oc.test.log
+base    : 20-fib-array.oc.test
+Command : oc 20-fib-array.oc
+starting: pid 27134: 21:48:43.00
+finished: pid 27134: 21:48:43.00, real 0.00, user 0.00, sys 0.00
+pstatus: 0x0000 EXIT STATUS = 0
+________________________________________________________________________
+________________________________________________________________________
+Script  : /afs/cats.ucsc.edu/courses/cmps012b-wm/bin/runprogram.perl
+limit c :    0 max core file size (KB)
+limit f : 4194303 max output file size (KB)
+limit t : 4294967295 max CPU time (sec)
+stdin   : /dev/null
+stdout  : 21-eratosthenes.oc.test.out
+stderr  : 21-eratosthenes.oc.test.err
+log     : 21-eratosthenes.oc.test.log
+base    : 21-eratosthenes.oc.test
+Command : oc 21-eratosthenes.oc
+starting: pid 27140: 21:48:43.00
+finished: pid 27140: 21:48:43.00, real 0.00, user 0.00, sys 0.00
+pstatus: 0x0000 EXIT STATUS = 0
+________________________________________________________________________
+________________________________________________________________________
+Script  : /afs/cats.ucsc.edu/courses/cmps012b-wm/bin/runprogram.perl
+limit c :    0 max core file size (KB)
+limit f : 4194303 max output file size (KB)
+limit t : 4294967295 max CPU time (sec)
+stdin   : /dev/null
+stdout  : 23-atoi.oc.test.out
+stderr  : 23-atoi.oc.test.err
+log     : 23-atoi.oc.test.log
+base    : 23-atoi.oc.test
+Command : oc 23-atoi.oc
+starting: pid 27146: 21:48:43.00
+finished: pid 27146: 21:48:44.00, real 1.00, user 0.89, sys 0.00
+pstatus: 0x0000 EXIT STATUS = 0
+________________________________________________________________________
+________________________________________________________________________
+Script  : /afs/cats.ucsc.edu/courses/cmps012b-wm/bin/runprogram.perl
+limit c :    0 max core file size (KB)
+limit f : 4194303 max output file size (KB)
+limit t : 4294967295 max CPU time (sec)
+stdin   : /dev/null
+stdout  : 30-fac-fnloop.oc.test.out
+stderr  : 30-fac-fnloop.oc.test.err
+log     : 30-fac-fnloop.oc.test.log
+base    : 30-fac-fnloop.oc.test
+Command : oc 30-fac-fnloop.oc
+starting: pid 27154: 21:48:44.00
+finished: pid 27154: 21:48:44.00, real 0.00, user 0.00, sys 0.00
+pstatus: 0x0000 EXIT STATUS = 0
+________________________________________________________________________
+________________________________________________________________________
+Script  : /afs/cats.ucsc.edu/courses/cmps012b-wm/bin/runprogram.perl
+limit c :    0 max core file size (KB)
+limit f : 4194303 max output file size (KB)
+limit t : 4294967295 max CPU time (sec)
+stdin   : /dev/null
+stdout  : 31-fib-2supn.oc.test.out
+stderr  : 31-fib-2supn.oc.test.err
+log     : 31-fib-2supn.oc.test.log
+base    : 31-fib-2supn.oc.test
+Command : oc 31-fib-2supn.oc
+starting: pid 27159: 21:48:44.00
+finished: pid 27159: 21:48:45.00, real 1.00, user 0.00, sys 0.00
+pstatus: 0x0000 EXIT STATUS = 0
+________________________________________________________________________
+________________________________________________________________________
+Script  : /afs/cats.ucsc.edu/courses/cmps012b-wm/bin/runprogram.perl
+limit c :    0 max core file size (KB)
+limit f : 4194303 max output file size (KB)
+limit t : 4294967295 max CPU time (sec)
+stdin   : /dev/null
+stdout  : 40-arraystack.oc.test.out
+stderr  : 40-arraystack.oc.test.err
+log     : 40-arraystack.oc.test.log
+base    : 40-arraystack.oc.test
+Command : oc 40-arraystack.oc
+starting: pid 27164: 21:48:45.00
+finished: pid 27164: 21:48:45.00, real 0.00, user 0.00, sys 0.00
+pstatus: 0x0000 EXIT STATUS = 0
+________________________________________________________________________
+________________________________________________________________________
+Script  : /afs/cats.ucsc.edu/courses/cmps012b-wm/bin/runprogram.perl
+limit c :    0 max core file size (KB)
+limit f : 4194303 max output file size (KB)
+limit t : 4294967295 max CPU time (sec)
+stdin   : /dev/null
+stdout  : 41-linkedstack.oc.test.out
+stderr  : 41-linkedstack.oc.test.err
+log     : 41-linkedstack.oc.test.log
+base    : 41-linkedstack.oc.test
+Command : oc 41-linkedstack.oc
+starting: pid 27169: 21:48:45.00
+finished: pid 27169: 21:48:45.00, real 0.00, user 0.00, sys 0.00
+pstatus: 0x0000 EXIT STATUS = 0
+________________________________________________________________________
+________________________________________________________________________
+Script  : /afs/cats.ucsc.edu/courses/cmps012b-wm/bin/runprogram.perl
+limit c :    0 max core file size (KB)
+limit f : 4194303 max output file size (KB)
+limit t : 4294967295 max CPU time (sec)
+stdin   : /dev/null
+stdout  : 42-viiiqueens.oc.test.out
+stderr  : 42-viiiqueens.oc.test.err
+log     : 42-viiiqueens.oc.test.log
+base    : 42-viiiqueens.oc.test
+Command : oc 42-viiiqueens.oc
+starting: pid 27174: 21:48:45.00
+finished: pid 27174: 21:48:45.00, real 0.00, user 0.01, sys 0.00
+pstatus: 0x0000 EXIT STATUS = 0
+________________________________________________________________________
+________________________________________________________________________
+Script  : /afs/cats.ucsc.edu/courses/cmps012b-wm/bin/runprogram.perl
+limit c :    0 max core file size (KB)
+limit f : 4194303 max output file size (KB)
+limit t : 4294967295 max CPU time (sec)
+stdin   : /dev/null
+stdout  : 44-dot-product.oc.test.out
+stderr  : 44-dot-product.oc.test.err
+log     : 44-dot-product.oc.test.log
+base    : 44-dot-product.oc.test
+Command : oc 44-dot-product.oc
+starting: pid 27179: 21:48:45.00
+finished: pid 27179: 21:48:45.00, real 0.00, user 0.00, sys 0.00
+pstatus: 0x0000 EXIT STATUS = 0
+________________________________________________________________________
+________________________________________________________________________
+Script  : /afs/cats.ucsc.edu/courses/cmps012b-wm/bin/runprogram.perl
+limit c :    0 max core file size (KB)
+limit f : 4194303 max output file size (KB)
+limit t : 4294967295 max CPU time (sec)
+stdin   : /dev/null
+stdout  : 45-towers-of-hanoi.oc.test.out
+stderr  : 45-towers-of-hanoi.oc.test.err
+log     : 45-towers-of-hanoi.oc.test.log
+base    : 45-towers-of-hanoi.oc.test
+Command : oc 45-towers-of-hanoi.oc
+starting: pid 27184: 21:48:45.00
+finished: pid 27184: 21:48:45.00, real 0.00, user 0.00, sys 0.00
+pstatus: 0x0000 EXIT STATUS = 0
+________________________________________________________________________
+________________________________________________________________________
+Script  : /afs/cats.ucsc.edu/courses/cmps012b-wm/bin/runprogram.perl
+limit c :    0 max core file size (KB)
+limit f : 4194303 max output file size (KB)
+limit t : 4294967295 max CPU time (sec)
+stdin   : /dev/null
+stdout  : 53-insertionsort.oc.test.out
+stderr  : 53-insertionsort.oc.test.err
+log     : 53-insertionsort.oc.test.log
+base    : 53-insertionsort.oc.test
+Command : oc 53-insertionsort.oc
+starting: pid 27189: 21:48:45.00
+finished: pid 27189: 21:48:45.00, real 0.00, user 0.07, sys 0.00
+pstatus: 0x0000 EXIT STATUS = 0
+________________________________________________________________________
+________________________________________________________________________
+Script  : /afs/cats.ucsc.edu/courses/cmps012b-wm/bin/runprogram.perl
+limit c :    0 max core file size (KB)
+limit f : 4194303 max output file size (KB)
+limit t : 4294967295 max CPU time (sec)
+stdin   : /dev/null
+stdout  : 90-c8q.oc.test.out
+stderr  : 90-c8q.oc.test.err
+log     : 90-c8q.oc.test.log
+base    : 90-c8q.oc.test
+Command : oc 90-c8q.oc
+starting: pid 27195: 21:48:45.00
+finished: pid 27195: 21:48:45.00, real 0.00, user 0.00, sys 0.00
+pstatus: 0x0100 EXIT STATUS = 1
+________________________________________________________________________
+________________________________________________________________________
+Script  : /afs/cats.ucsc.edu/courses/cmps012b-wm/bin/runprogram.perl
+limit c :    0 max core file size (KB)
+limit f : 4194303 max output file size (KB)
+limit t : 4294967295 max CPU time (sec)
+stdin   : /dev/null
+stdout  : 91-typecheck.oc.test.out
+stderr  : 91-typecheck.oc.test.err
+log     : 91-typecheck.oc.test.log
+base    : 91-typecheck.oc.test
+Command : oc 91-typecheck.oc
+starting: pid 27200: 21:48:45.00
+finished: pid 27200: 21:48:45.00, real 0.00, user 0.00, sys 0.00
+pstatus: 0x0100 EXIT STATUS = 1
+________________________________________________________________________
+________________________________________________________________________
+Script  : /afs/cats.ucsc.edu/courses/cmps012b-wm/bin/runprogram.perl
+limit c :    0 max core file size (KB)
+limit f : 4194303 max output file size (KB)
+limit t : 4294967295 max CPU time (sec)
+stdin   : /dev/null
+stdout  : 92-uncomment.oc.test.out
+stderr  : 92-uncomment.oc.test.err
+log     : 92-uncomment.oc.test.log
+base    : 92-uncomment.oc.test
+Command : oc 92-uncomment.oc
+starting: pid 27205: 21:48:45.00
+finished: pid 27205: 21:48:45.00, real 0.00, user 0.00, sys 0.00
+pstatus: 0x0000 EXIT STATUS = 0
+________________________________________________________________________
+________________________________________________________________________
+Script  : /afs/cats.ucsc.edu/courses/cmps012b-wm/bin/runprogram.perl
+limit c :    0 max core file size (KB)
+limit f : 4194303 max output file size (KB)
+limit t : 4294967295 max CPU time (sec)
+stdin   : /dev/null
+stdout  : 93-semantics.oc.test.out
+stderr  : 93-semantics.oc.test.err
+log     : 93-semantics.oc.test.log
+base    : 93-semantics.oc.test
+Command : oc 93-semantics.oc
+starting: pid 27210: 21:48:45.00
+finished: pid 27210: 21:48:45.00, real 0.00, user 0.00, sys 0.00
+pstatus: 0x0100 EXIT STATUS = 1
+________________________________________________________________________
+________________________________________________________________________
+Script  : /afs/cats.ucsc.edu/courses/cmps012b-wm/bin/runprogram.perl
+limit c :    0 max core file size (KB)
+limit f : 4194303 max output file size (KB)
+limit t : 4294967295 max CPU time (sec)
+stdin   : /dev/null
+stdout  : 94-syntax.oc.test.out
+stderr  : 94-syntax.oc.test.err
+log     : 94-syntax.oc.test.log
+base    : 94-syntax.oc.test
+Command : oc 94-syntax.oc
+starting: pid 27215: 21:48:45.00
+finished: pid 27215: 21:48:45.00, real 0.00, user 0.00, sys 0.00
+pstatus: 0x0100 EXIT STATUS = 1
+________________________________________________________________________
+________________________________________________________________________
+Script  : /afs/cats.ucsc.edu/courses/cmps012b-wm/bin/runprogram.perl
+limit c :    0 max core file size (KB)
+limit f : 4194303 max output file size (KB)
+limit t : 4294967295 max CPU time (sec)
+stdin   : /dev/null
+stdout  : 95-cobol.oc.test.out
+stderr  : 95-cobol.oc.test.err
+log     : 95-cobol.oc.test.log
+base    : 95-cobol.oc.test
+Command : oc 95-cobol.oc
+starting: pid 27220: 21:48:45.00
+finished: pid 27220: 21:48:45.00, real 0.00, user 0.00, sys 0.00
+pstatus: 0x0100 EXIT STATUS = 1
+________________________________________________________________________
+________________________________________________________________________
+Script  : /afs/cats.ucsc.edu/courses/cmps012b-wm/bin/runprogram.perl
+limit c :    0 max core file size (KB)
+limit f : 4194303 max output file size (KB)
+limit t : 4294967295 max CPU time (sec)
+stdin   : /dev/null
+stdout  : 96-unterminated.oc.test.out
+stderr  : 96-unterminated.oc.test.err
+log     : 96-unterminated.oc.test.log
+base    : 96-unterminated.oc.test
+Command : oc 96-unterminated.oc
+starting: pid 27226: 21:48:45.00
+finished: pid 27226: 21:48:46.00, real 1.00, user 0.00, sys 0.00
+pstatus: 0x008B TERMINATED 11: Segmentation fault (core dumped)
+________________________________________________________________________
+________________________________________________________________________
+Script  : /afs/cats.ucsc.edu/courses/cmps012b-wm/bin/runprogram.perl
+limit c :    0 max core file size (KB)
+limit f : 4194303 max output file size (KB)
+limit t : 4294967295 max CPU time (sec)
+stdin   : /dev/null
+stdout  : nosuch.oc.test.out
+stderr  : nosuch.oc.test.err
+log     : nosuch.oc.test.log
+base    : nosuch.oc.test
+Command : oc nosuch.oc
+starting: pid 27236: 21:48:46.00
+finished: pid 27236: 21:48:46.00, real 0.00, user 0.00, sys 0.00
+pstatus: 0x0000 EXIT STATUS = 0
+________________________________________________________________________
