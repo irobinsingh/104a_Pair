@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sstream> 
 
 #include "astree.h"
 #include "stringset.h"
@@ -16,6 +17,8 @@
 
 SymbolTable *currentSymTable;
 SymbolTable *global_sym_table = new SymbolTable(NULL);
+int global_temp_char_counter = 0;
+int global_loop_counter = 0;
 
 astree* new_astree (const char* lexinfo) {
 	return new_astree (0,0,0,0,lexinfo);
@@ -478,12 +481,26 @@ bool isNULL (string type){
 	return (strcmp(type.c_str(), null_s.c_str()) == 0) ;
 }
 
-bool isStruct (string name ){
+bool isStruct (string name){
 	bool structFound = false;
 	for(size_t tables = 0; tables < struct_defs.size(); ++tables){
 		if(strcmp(struct_defs[tables]->lookup("struct").c_str(), name.c_str()) == 0){
 			structFound = true;
 			tables = struct_defs.size();
+		}
+	}
+	return structFound;
+}
+
+bool isStructARR (string name){
+	bool structFound = false;
+	if(name.length() >= 2){
+		string name_no_array = name.substr(0, name.length()-2);
+		for(size_t tables = 0; tables < struct_defs.size(); ++tables){
+			if(strcmp(struct_defs[tables]->lookup("struct").c_str(), name_no_array.c_str()) == 0){
+				structFound = true;
+				tables = struct_defs.size();
+			}
 		}
 	}
 	return structFound;
@@ -654,6 +671,48 @@ int lexInfoToSwitch(const char* lexinfo){
 	}
 		
 	return lexReturn;
+}
+
+string typeToOil(const char* type){
+	string bool_s = "bool"; 			// ubyte
+	string char_s = "char"; 			// ubyte
+	string int_s = "int"; 				// int
+	string string_s = "string";			// ubute*
+	string boolARR_s = "bool[]";		// ubyte*
+	string charARR_s = "char[]";		// ubyte*
+	string intARR_s = "int[]";			// int*
+	string stringARR_s = "string[]";	// ubyte**
+		
+	string return_type = "";
+	
+	if(type == bool_s){
+		return_type = "ubyte ";
+	}else if(type == char_s){
+		return_type = "ubyte ";
+	}else if(type == int_s){
+		return_type = "int ";
+	}else if(type == string_s){
+		return_type = "ubyte *";
+	}else if(type == boolARR_s){
+		return_type = "ubyte *";
+	}else if(type == charARR_s){
+		return_type = "ubyte *";
+	}else if(type == intARR_s){
+		return_type = "int *";
+	}else if(type == stringARR_s){
+		return_type = "ubyte **";
+	}else if(isStruct(type)){
+		return_type = "struct ";
+		return_type.append(type);
+		return_type.append(" *");
+	}else if(isStructARR(type)){
+		string type_s = type;
+		return_type = "struct ";
+		return_type.append(type_s.substr(0, type_s.length()-2));
+		return_type.append( " **");
+	}
+		
+	return return_type;
 }
 
 static void astree_to_sym_rec (SymbolTable * symTable, astree* root) {
@@ -1074,14 +1133,19 @@ void astree_to_sym (astree* root) {
    astree_to_sym_rec(root);
    fflush (NULL);
 }
+/*
+string getNewTempVar(string ident){
+	string return_string = ident;
+	ident.append(++global_temp_char_counter;
+}*/
 
-static void astree_to_oil_rec (FILE* output, astree* root, int counter, int indent){
-	if (root == NULL)
+static string astree_to_oil_rec (FILE* output, astree* root, int counter, int indent, bool inStruct){
+	if (root == NULL) return "";
 	
-	string returnString = "";
+	string return_string = "";
 	
 	int indent_count = 0;
-	string indent_print = "";
+	//string indent_print = "_";
 	
 	if(root->children.size() == 0){
 		switch(root->symbol){
@@ -1099,19 +1163,22 @@ static void astree_to_oil_rec (FILE* output, astree* root, int counter, int inde
 				break;
 			}
 			case TOK_INTCON:{
+				return_string = root->lexinfo->c_str();
 				break;
 			}
 			case TOK_CHARCON:{
+				return_string = root->lexinfo->c_str();
 				break;
 			}
 			case TOK_STRINGCON:{
+				return_string = root->lexinfo->c_str();
 				break;
 			}
 			case TOK_IDENT:{
+				return_string = root->lexinfo->c_str();
 				break;
 			}
 			default:{
-	
 				break;
 			}
 		}
@@ -1122,29 +1189,70 @@ static void astree_to_oil_rec (FILE* output, astree* root, int counter, int inde
 		switch(lexInfoToSwitch(root->lexinfo->c_str())){
 			case 1:{//struct definition
 				fprintf(output, "struct %s {\n", root->children[0]->lexinfo->c_str());
-				astree_to_oil_rec(output, root->children[1], counter, indent+1);
-				fprintf(output, "};\n");
+				astree_to_oil_rec(output, root->children[1], counter, indent+1, true);
+				fprintf(output, "};\n\n");
 				break;
 			}
 			case 2:{//variable
+				string type = "";
+				string name = "";
+				string right_hand = "";
+				
 				if(root->children[0]->children[0]->children[0]->symbol == TOK_ARRAY){
-					//string tempStr = root->children[0]->children[0]->lexinfo->c_str();
-					//tempStr.append(root->children[0]->children[0]->children[0]->lexinfo->c_str());
-					
-					//fprintf(output,"%*s%s %s", indent * 4, "",root->children[0]->children[0]->children[1]->lexinfo->c_str(), tempStr.c_str() );
+					name = root->children[0]->children[0]->children[1]->lexinfo->c_str();
+					type = root->children[0]->children[0]->lexinfo->c_str();
+					type.append(root->children[0]->children[0]->children[0]->lexinfo->c_str());
+					type = typeToOil(type.c_str());
+					right_hand = astree_to_oil_rec(output, root->children[0]->children[1], counter, indent, inStruct);
 				}else{
-					//fprintf(output,"%*s%s %s", indent * 4, "",root->children[0]->children[0]->lexinfo->c_str(), root->children[0]->children[0]->children[0]->lexinfo->c_str() );
+					name = root->children[0]->children[0]->children[0]->lexinfo->c_str();
+					type = typeToOil(root->children[0]->children[0]->lexinfo->c_str());
+					right_hand = astree_to_oil_rec(output, root->children[0]->children[1], counter, indent, inStruct);
+				}
+				
+				if(indent >= 1){
+					fprintf(output,"%*s%s_%d_%s = %s;\n", indent * 8, "",
+						type.c_str(),
+						indent,
+						name.c_str(),
+						right_hand.c_str());
+				}else{
+					fprintf(output,"%*s%s__%s = %s;\n", indent * 8, "",
+						type.c_str(),
+						name.c_str(),
+						right_hand.c_str());
 				}
 				break;
 			}
 			case 3:{//normal declaration
-				if(root->children[0]->children[0]->children[0]->symbol == TOK_ARRAY){
-					//string tempStr = root->children[0]->lexinfo->c_str();
-					//tempStr.append(root->children[0]->children[0]->lexinfo->c_str());
-					
-					//fprintf(output,"%*s%s %s", indent * 4, "",root->children[0]->children[1]->lexinfo->c_str(), tempStr.c_str() );
+				string type = "";
+				string name = "";
+				
+				if(root->children[0]->children[0]->symbol == TOK_ARRAY){
+					name = root->children[0]->children[1]->lexinfo->c_str();
+					type = root->children[0]->lexinfo->c_str();
+					type.append(root->children[0]->children[0]->lexinfo->c_str());
+					type = typeToOil(type.c_str());
 				}else{
-					//fprintf(output,"%*s%s %s", indent * 4, "",root->children[0]->lexinfo->c_str(), root->children[0]->children[0]->children[0]->lexinfo->c_str() );
+					name = root->children[0]->children[0]->lexinfo->c_str();
+					type = typeToOil(root->children[0]->lexinfo->c_str());
+				}
+				
+				if(inStruct){
+					fprintf(output,"%*s%s%s;\n", indent * 8, "",
+						type.c_str(),
+						name.c_str());
+				}else{
+					if(indent >= 1){
+						fprintf(output,"%*s%s_%d_%s;\n", indent * 8, "",
+							type.c_str(),
+							indent,
+							name.c_str());
+					}else{
+						fprintf(output,"%*s%s__%s;\n", indent * 8, "",
+							type.c_str(),
+							name.c_str());
+					}
 				}
 				break;
 			}
@@ -1169,12 +1277,88 @@ static void astree_to_oil_rec (FILE* output, astree* root, int counter, int inde
 				break;
 			}	
 			case 10:{//binop 
+			string right = "";
+			string left = "";
+					left = astree_to_oil_rec(output, 
+												root->children[0]->children[0],
+												counter, indent, inStruct); 
+					right = astree_to_oil_rec(output, 
+											root->children[0]->children[1], 
+											counter, indent, inStruct);
+				if(root->children[0]->symbol != '='){
+					stringstream temp_var;
+					temp_var << "i" << ++global_temp_char_counter;
+					string temp_var_s = temp_var.str();
+			
+					fprintf (output,"%*s%s = %s %s %s;\n", indent * 8, "",
+						temp_var_s.c_str(),
+						left.c_str(),
+						root->children[0]->lexinfo->c_str(),
+						right.c_str());
+					return_string = temp_var.str();
+				}else{
+					fprintf (output,"%*s%s = %s;\n", indent * 8, "",
+						left.c_str(),
+						right.c_str());
+				}
 				break;	
 			}
 			case 12:{//variable 
+				if(root->children.size() == 2){
+					string right = astree_to_oil_rec(output, 
+													root->children[0],
+													counter, indent, inStruct); 
+					string left = astree_to_oil_rec(output, 
+													root->children[1],
+													counter, indent, inStruct);
+					
+					if(isBaseTypeArr(typeCheck(root->children[0], counter))){
+						return_string = right + "[ " + left + " ]";
+					}else{
+						return_string = right + "." + left;
+					}
+				}else{
+					return_string = astree_to_oil_rec(output, 
+													root->children[0],
+													counter, indent, inStruct);
+				}
 				break;
 			}
 			case 13:{//new 
+				string expresion = "";
+				if(root->children.size() == 2){
+					string expression = astree_to_oil_rec(output, root->children[1], counter, indent, inStruct);
+					
+					if(isStruct(root->children[0]->lexinfo->c_str())){
+						return_string = "xcalloc(";
+						return_string += expression.c_str(); 
+						return_string += ", sizeof(";
+						return_string += root->children[0]->lexinfo->c_str();
+						return_string += "));\n";
+					}else{
+						if(isInt(root->children[0]->lexinfo->c_str())){
+							return_string = "xcalloc(";
+							return_string += expression.c_str(); 
+							return_string += ", sizeof(int));\n";
+						}else{
+							return_string = "xcalloc(";
+							return_string += expression.c_str(); 
+							return_string += ", sizeof(ubyte));\n";
+						}
+					}
+				}else{
+					if(isStruct(root->children[0]->lexinfo->c_str())){
+						return_string = "xcalloc(1, sizeof(";
+						return_string += root->children[0]->lexinfo->c_str();
+						return_string += "));\n";
+					}else{
+						if(isInt(root->children[0]->lexinfo->c_str())){
+							return_string = "xcalloc(1, sizeof(int));\n";
+						}else{
+							return_string = "xcalloc(1, sizeof(ubyte));\n";
+						}
+					}
+				}		
 				break;
 			}
 			case 14:{//call 
@@ -1183,18 +1367,20 @@ static void astree_to_oil_rec (FILE* output, astree* root, int counter, int inde
 			case 0:{//no matching condition. Do nothing. 
 				for (size_t child = 0; child < root->children.size(); ++child) {
 					//returnString = typeCheck (root->children[child], counter);
-					astree_to_oil_rec (output, root->children[child], counter, indent);
+					astree_to_oil_rec (output, root->children[child], counter, indent, inStruct);
 				}
 				break;
 			}
 		}
 	}
+	
+	return return_string;
 }
 
 void astree_to_oil (FILE* output, astree* root){
 	fprintf(output,"#define __OCLIB_C__\n");
-	fprintf(output,"#include \"oclib.oh\"\n");
-	astree_to_oil_rec(output, root, 0, 0);
+	fprintf(output,"#include \"oclib.oh\"\n\n");
+	astree_to_oil_rec(output, root, 0, 0, false);
 }
 
 /*

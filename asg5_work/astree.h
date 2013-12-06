@@ -42,6 +42,7 @@ void type_check (SymbolTable *symTable, astree* node);
 void typeCheck_astree (astree* root);
 void dump_structs (FILE* output);
 int lexInfoToSwitch(const char* lexinfo);
+string typeToOil(const char* type);
 
 //string getTypeRec (astree* node);
 
@@ -56,6 +57,7 @@ bool isChar (string type);
 bool isNULL (string type);
 bool isString (string type);
 bool isStruct (string name);
+bool isStructARR (string name);
 bool isStructIdent(string type1,string type2);
 string getIdentType(string name, int counter);
 string getIdentInStruct(string name);
