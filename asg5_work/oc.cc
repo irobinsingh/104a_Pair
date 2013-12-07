@@ -37,6 +37,7 @@ int main (int argc, char **argv) {
     string input_file = "";
     string debugFlag = "";
     string baseName = "";
+	string dirName = "";
     string programName = "";
     string cppInput = "";
     char * fileName;
@@ -84,6 +85,7 @@ int main (int argc, char **argv) {
             }else{ // if the correct file extension was found
                 fileName = argv[optind];
                 baseName = basename(fileName);
+				//dirName = dirname(fileName);
                 programName = baseName.substr(0, baseName.length()-3);
             }
         }
@@ -176,11 +178,21 @@ int main (int argc, char **argv) {
 				}
 				
 				try {
+					bool compile = false;
+					string compile_cmd = "gcc -g -o ";
+					compile_cmd += programName + " -x c " + outputFileNameOIL + " " + "oclib.c";
+					
+					printf("%s\n",compile_cmd.c_str());
 					
 					FILE *outputFileOIL = fopen (outputFileNameOIL.c_str(),"w");
-					
-					astree_to_oil(outputFileOIL,yyparse_astree);
-					
+					if(get_exitstatus() == 0){  
+						astree_to_oil(outputFileOIL,yyparse_astree);
+						
+						if(compile){
+							
+							system(compile_cmd.c_str());
+						}
+					}
 					fclose (outputFileOIL); // close the str file
 					
 				} catch (...) { // if there is an error with the file

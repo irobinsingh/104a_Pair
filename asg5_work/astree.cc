@@ -1258,6 +1258,7 @@ static string astree_to_oil_rec (FILE* output, astree* root, int counter, int in
 			}
 			case 4:{//function declaration
 				counter++;
+				
 				break;
 			}
 			case 5:{//block
@@ -1315,7 +1316,7 @@ static string astree_to_oil_rec (FILE* output, astree* root, int counter, int in
 					if(isBaseTypeArr(typeCheck(root->children[0], counter))){
 						return_string = right + "[ " + left + " ]";
 					}else{
-						return_string = right + "." + left;
+						return_string = right + "->" + left;
 					}
 				}else{
 					return_string = astree_to_oil_rec(output, 
@@ -1362,6 +1363,7 @@ static string astree_to_oil_rec (FILE* output, astree* root, int counter, int in
 				break;
 			}
 			case 14:{//call 
+				fprintf(output,"__%s (%s);\n", root->children[0]->lexinfo->c_str(), root->children[0]->children[0]->lexinfo->c_str());
 				break;
 			}
 			case 0:{//no matching condition. Do nothing. 
@@ -1380,7 +1382,9 @@ static string astree_to_oil_rec (FILE* output, astree* root, int counter, int in
 void astree_to_oil (FILE* output, astree* root){
 	fprintf(output,"#define __OCLIB_C__\n");
 	fprintf(output,"#include \"oclib.oh\"\n\n");
+	fprintf(output,"void __ocmain ()\n{\n");
 	astree_to_oil_rec(output, root, 0, 0, false);
+	fprintf(output,"}\n");
 }
 
 /*
@@ -1405,4 +1409,5 @@ void dump_structs (FILE* output){
 		}
 }
 RCSC("$Id: astree.cc,v 1.14 2013-10-10 18:48:18-07 - - $")
+
 
